@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Boston Semiconductor Website
+
+Next.js (App Router) marketing site with Sanity CMS-powered blog.
+
+## Stack
+
+- **Next.js 16** — App Router, TypeScript, ISR
+- **Tailwind CSS v4** — CSS-based design tokens
+- **Sanity CMS** — Blog content management via Sanity Studio
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (marketing)/     # Static pages (homepage, future about/services/etc.)
+│   └── blog/            # Blog list + [slug] detail pages
+├── components/
+│   ├── ui/              # Reusable UI (Button, Card, Nav, Footer)
+│   └── sections/        # Page-specific sections (Hero, Services, etc.)
+├── lib/
+│   ├── config/          # Typed content constants (home.ts, site.ts)
+│   ├── sanity/          # Sanity client, GROQ queries
+│   ├── cms.ts           # CMS abstraction layer
+│   └── blog.ts          # Blog data-fetching (no fetch in pages)
+└── types/               # TypeScript interfaces (BlogPost, Career, etc.)
+```
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.local.example .env.local
+```
+
+Fill in your Sanity project ID and dataset. Create a project at [sanity.io](https://www.sanity.io/) if you don't have one.
+
+### 3. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Sanity Studio (blog admin)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx sanity dev --cwd sanity
+```
 
-## Learn More
+Admins manage blog posts through Sanity Studio — no custom dashboard needed.
 
-To learn more about Next.js, take a look at the following resources:
+## Content Editing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Static page content** (hero, services, stats, etc.): edit typed constants in `src/lib/config/`
+- **Blog posts**: managed in Sanity Studio
+- **Nav/footer links**: `src/lib/config/site.ts`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Adding Future Pages
 
-## Deploy on Vercel
+New sections (e.g. `/careers`) follow the same pattern:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Add types in `src/types/`
+2. Add data layer in `src/lib/`
+3. Add route under `src/app/(marketing)/`
+4. Add nav link in `src/lib/config/site.ts`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+No restructuring of existing code required.
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
