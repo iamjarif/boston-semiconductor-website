@@ -21,15 +21,14 @@ export function HeroSection({ content }: HeroSectionProps) {
             {content.subtitle}
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <Button href={content.primaryCta.href} size="lg">
+            <Button href={content.primaryCta.href} size="l">
               {content.primaryCta.label}
             </Button>
             {content.secondaryCta && (
               <Button
                 href={content.secondaryCta.href}
-                variant="secondary"
-                size="lg"
-                className="border-border-default text-text-primary hover:bg-bg-surface-raised"
+                variant="outline"
+                size="l"
               >
                 {content.secondaryCta.label}
               </Button>

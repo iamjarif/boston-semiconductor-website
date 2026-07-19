@@ -18,7 +18,7 @@ export function CtaSection({ content }: CtaSectionProps) {
         <Button
           href={content.cta.href}
           variant="secondary"
-          size="lg"
+          size="l"
           className="mt-8"
         >
           {content.cta.label}

@@ -1,54 +1,52 @@
-import type { ReactNode } from "react";
+import type { ElementType, ReactNode } from "react";
 
-interface CardProps {
-  children: ReactNode;
+export interface CardProps {
+  title: string;
+  subText?: string;
+  caption?: string;
+  showCaption?: boolean;
+  icon?: ReactNode;
   className?: string;
+  as?: ElementType;
 }
 
-export function Card({ children, className = "" }: CardProps) {
-  return (
-    <div
-      className={`rounded-xl border border-border-default bg-bg-surface p-6 shadow-sm transition-shadow hover:shadow-md ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-interface CardHeaderProps {
-  children: ReactNode;
-  className?: string;
-}
-
-export function CardHeader({ children, className = "" }: CardHeaderProps) {
-  return <div className={`mb-4 ${className}`}>{children}</div>;
-}
-
-interface CardTitleProps {
-  children: ReactNode;
-  className?: string;
-}
-
-export function CardTitle({ children, className = "" }: CardTitleProps) {
-  return (
-    <h3 className={`text-h5 text-text-primary ${className}`}>
-      {children}
-    </h3>
-  );
-}
-
-interface CardDescriptionProps {
-  children: ReactNode;
-  className?: string;
-}
-
-export function CardDescription({
-  children,
+export function Card({
+  title,
+  subText,
+  caption = "Caption",
+  showCaption = true,
+  icon,
   className = "",
-}: CardDescriptionProps) {
+  as: Component = "div",
+}: CardProps) {
   return (
-    <p className={`text-body-sm text-text-secondary ${className}`}>
-      {children}
-    </p>
+    <Component
+      className={`group relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl bg-bg-surface p-8 transition-colors hover:border hover:border-border-strong hover:bg-bg-surface-raised ${className}`}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/10 via-brand-primary/5 to-transparent" />
+      </div>
+
+      <div className="relative flex flex-col gap-4">
+        {icon ? (
+          <span className="inline-flex size-[42px] shrink-0 items-center text-brand-primary">
+            {icon}
+          </span>
+        ) : null}
+
+        {showCaption && caption ? (
+          <p className="text-mono text-brand-primary">{caption}</p>
+        ) : null}
+
+        <h3 className="text-h5 text-text-primary">{title}</h3>
+
+        {subText ? (
+          <p className="text-body-sm text-text-secondary">{subText}</p>
+        ) : null}
+      </div>
+    </Component>
   );
 }

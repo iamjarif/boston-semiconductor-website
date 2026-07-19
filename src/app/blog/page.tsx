@@ -1,6 +1,11 @@
 import Link from "next/link";
 
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/CardPrimitives";
 import { getBlogPosts } from "@/lib/blog";
 
 /** ISR: revalidate blog list every hour so new posts appear without full redeploy. */

@@ -3,7 +3,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/Card";
+} from "@/components/ui/CardPrimitives";
 import type { ServiceItem } from "@/types/content";
 
 interface ServicesSectionProps {
