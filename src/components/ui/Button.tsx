@@ -12,11 +12,11 @@ interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-brand-primary text-white hover:bg-brand-primary-dark focus-visible:ring-brand-accent",
+    "bg-gradient-button-primary text-text-on-brand hover:bg-gradient-button-primary-hover focus-visible:ring-brand-primary",
   secondary:
-    "border border-brand-primary text-brand-primary hover:bg-brand-primary/5 focus-visible:ring-brand-accent",
+    "border border-border-button bg-gradient-button-secondary text-text-on-brand hover:bg-gradient-button-secondary-hover focus-visible:ring-brand-primary",
   ghost:
-    "text-foreground hover:bg-muted focus-visible:ring-brand-accent",
+    "text-text-primary hover:bg-bg-surface focus-visible:ring-brand-primary",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

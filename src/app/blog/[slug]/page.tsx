@@ -15,27 +15,27 @@ interface BlogPostPageProps {
 const portableTextComponents: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
-      <h2 className="text-h4 mt-8 mb-4 text-foreground">
+      <h2 className="text-h4 mt-8 mb-4 text-text-primary">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-h5 mt-6 mb-3 text-foreground">
+      <h3 className="text-h5 mt-6 mb-3 text-text-primary">
         {children}
       </h3>
     ),
     normal: ({ children }) => (
-      <p className="text-body mb-4 text-muted-foreground">{children}</p>
+      <p className="text-body mb-4 text-text-secondary">{children}</p>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="text-body mb-4 list-disc space-y-2 pl-6 text-muted-foreground">
+      <ul className="text-body mb-4 list-disc space-y-2 pl-6 text-text-secondary">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="text-body mb-4 list-decimal space-y-2 pl-6 text-muted-foreground">
+      <ol className="text-body mb-4 list-decimal space-y-2 pl-6 text-text-secondary">
         {children}
       </ol>
     ),
@@ -84,15 +84,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <header>
         <time
           dateTime={post.publishedAt}
-          className="text-body-sm text-muted-foreground"
+          className="text-body-sm text-text-secondary"
         >
           {formatDate(post.publishedAt)}
         </time>
-        <h1 className="text-h3 mt-2 text-foreground">
+        <h1 className="text-h3 mt-2 text-text-primary">
           {post.title}
         </h1>
         {post.excerpt && (
-          <p className="text-body-lg mt-4 text-muted-foreground">{post.excerpt}</p>
+          <p className="text-body-lg mt-4 text-text-secondary">{post.excerpt}</p>
         )}
       </header>
 

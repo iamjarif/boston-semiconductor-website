@@ -19,13 +19,13 @@ const iconMap: Record<ServiceItem["icon"], string> = {
 
 export function ServicesSection({ services }: ServicesSectionProps) {
   return (
-    <section id="services" className="bg-background py-20 lg:py-28">
+    <section id="services" className="bg-bg-base py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-h3 text-foreground">
+          <h2 className="text-h3 text-text-primary">
             Our Solutions
           </h2>
-          <p className="text-body-lg mt-4 text-muted-foreground">
+          <p className="text-body-lg mt-4 text-text-secondary">
             End-to-end semiconductor services tailored to your needs
           </p>
         </div>
@@ -35,7 +35,7 @@ export function ServicesSection({ services }: ServicesSectionProps) {
             <Card key={service.title}>
               <CardHeader>
                 <span
-                  className="mb-2 inline-block text-2xl text-brand-accent"
+                  className="mb-2 inline-block text-2xl text-brand-primary"
                   aria-hidden="true"
                 >
                   {iconMap[service.icon]}

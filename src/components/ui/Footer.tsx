@@ -6,17 +6,17 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-brand-primary-dark text-white">
+    <footer className="border-t border-border-default bg-bg-surface text-text-primary">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
             <p className="text-h6">{siteConfig.name}</p>
-            <p className="text-body-sm mt-2 text-white/70">{siteConfig.tagline}</p>
+            <p className="text-body-sm mt-2 text-text-secondary">{siteConfig.tagline}</p>
           </div>
 
           {siteConfig.footerColumns.map((column) => (
             <div key={column.title}>
-              <h4 className="text-label-sm uppercase text-white/90">
+              <h4 className="text-label-sm uppercase text-text-primary">
                 {column.title}
               </h4>
               <ul className="mt-4 space-y-2">
@@ -24,7 +24,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-body-sm text-white/70 transition-colors hover:text-white"
+                      className="text-body-sm text-text-secondary transition-colors hover:text-text-primary"
                     >
                       {link.label}
                     </Link>
@@ -35,8 +35,8 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
-          <p className="text-body-sm text-white/50">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border-default pt-8 sm:flex-row">
+          <p className="text-body-sm text-text-disabled">
             &copy; {currentYear} {siteConfig.name}. All rights reserved.
           </p>
           <div className="flex gap-6">
@@ -44,7 +44,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-body-sm text-white/50 transition-colors hover:text-white"
+                className="text-body-sm text-text-disabled transition-colors hover:text-text-primary"
                 target="_blank"
                 rel="noopener noreferrer"
               >

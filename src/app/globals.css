@@ -1,37 +1,79 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 @import "../styles/typography.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --surface: #f8fafc;
-  --border: #e2e8f0;
-  --brand-primary: #1e3a5f;
-  --brand-primary-dark: #0f2744;
-  --brand-accent: #3b82f6;
-  --brand-secondary: #06b6d4;
+  /* Brand */
+  --color-brand-primary: #18cb96;
+  --color-brand-primary-hover: #2ce2ac;
+  --color-brand-secondary: #2f6bff;
+  --color-brand-primary-deep: #0e8462;
+  --color-brand-background: #daf4ea;
+
+  /* Background */
+  --color-bg-base: #0a0a0a;
+  --color-bg-surface: #151515;
+  --color-bg-surface-raised: #1f1f1f;
+
+  /* Text */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a3a3a3;
+  --color-text-disabled: #6b6b6b;
+  --color-text-on-brand: #0a0a0a;
+
+  /* Border */
+  --color-border-default: #2a2a2a;
+  --color-border-strong: #3d3d3d;
+  --color-border-button: #1ba26d;
+
+  /* Semantic */
+  --color-semantic-success: #00e67a;
+  --color-semantic-warning: #f5a623;
+  --color-semantic-error: #ff5a5f;
+  --color-semantic-info: #2f6bff;
+
+  /* Neutral scale */
+  --color-neutral-100: #0a0a0a;
+  --color-neutral-200: #151515;
+  --color-neutral-300: #1f1f1f;
+  --color-neutral-400: #2a2a2a;
+  --color-neutral-500: #3d3d3d;
+  --color-neutral-600: #6b6b6b;
+  --color-neutral-700: #a3a3a3;
+  --color-neutral-800: #d4d4d4;
+  --color-neutral-900: #f7f8f8;
+
+  /* Button gradients — exact Figma stops, 180deg */
+  --gradient-button-primary: linear-gradient(
+    180deg,
+    var(--color-brand-primary) 0%,
+    var(--color-brand-primary-deep) 100%
+  );
+  --gradient-button-primary-hover: linear-gradient(
+    180deg,
+    var(--color-brand-primary-hover) 0%,
+    var(--color-brand-primary-deep) 100%
+  );
+  --gradient-button-secondary: linear-gradient(
+    180deg,
+    var(--color-text-primary) 0%,
+    var(--color-neutral-800) 100%
+  );
+  --gradient-button-secondary-hover: linear-gradient(
+    180deg,
+    var(--color-text-primary) 0%,
+    var(--color-neutral-900) 100%
+  );
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-surface: var(--surface);
-  --color-border: var(--border);
-  --color-brand-primary: var(--brand-primary);
-  --color-brand-primary-dark: var(--brand-primary-dark);
-  --color-brand-accent: var(--brand-accent);
-  --color-brand-secondary: var(--brand-secondary);
   --font-heading: var(--font-heading);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-bg-base);
+  color: var(--color-text-primary);
   font-family: var(--font-sans), system-ui, sans-serif;
 }

@@ -29,17 +29,17 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   return (
     <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
       <div className="mx-auto max-w-2xl text-center">
-        <h1 className="text-h1 text-foreground">
+        <h1 className="text-h1 text-text-primary">
           Blog
         </h1>
-        <p className="text-body-lg mt-4 text-muted-foreground">
+        <p className="text-body-lg mt-4 text-text-secondary">
           Insights and updates from Boston Semiconductor
         </p>
       </div>
 
       {posts.length === 0 ? (
         <div className="mx-auto mt-16 max-w-md text-center">
-          <p className="text-body text-muted-foreground">
+          <p className="text-body text-text-secondary">
             No posts yet. Configure Sanity CMS and publish your first article.
           </p>
         </div>
@@ -52,7 +52,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                   <CardHeader>
                     <time
                       dateTime={post.publishedAt}
-                      className="text-body-sm text-muted-foreground"
+                      className="text-body-sm text-text-secondary"
                     >
                       {formatDate(post.publishedAt)}
                     </time>
@@ -72,18 +72,18 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               {currentPage > 1 && (
                 <Link
                   href={`/blog?page=${currentPage - 1}`}
-                  className="text-label rounded-lg border border-border px-4 py-2 text-foreground transition-colors hover:bg-muted"
+                  className="text-label rounded-lg border border-border-default px-4 py-2 text-text-primary transition-colors hover:bg-bg-surface"
                 >
                   Previous
                 </Link>
               )}
-              <span className="text-body-sm text-muted-foreground">
+              <span className="text-body-sm text-text-secondary">
                 Page {currentPage} of {totalPages}
               </span>
               {currentPage < totalPages && (
                 <Link
                   href={`/blog?page=${currentPage + 1}`}
-                  className="text-label rounded-lg border border-border px-4 py-2 text-foreground transition-colors hover:bg-muted"
+                  className="text-label rounded-lg border border-border-default px-4 py-2 text-text-primary transition-colors hover:bg-bg-surface"
                 >
                   Next
                 </Link>
