@@ -1,57 +1,99 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { siteConfig } from "@/lib/config/site";
+
+interface FooterLink {
+  label: string;
+  href?: string;
+}
+
+interface FooterColumnData {
+  heading: string;
+  links: FooterLink[];
+}
+
+const footerColumns: FooterColumnData[] = [
+  {
+    heading: "Pages",
+    links: [
+      { label: "GaN Power", href: "/services/gan-power" },
+      { label: "TCAD", href: "/services/tcad" },
+      { label: "RF & Analog", href: "/services/rf-analog" },
+      { label: "Place & Route", href: "/services/place-and-route" },
+      { label: "3D-IC", href: "/services/3d-ic" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "Engagement Models", href: "/#engagement-models" },
+      { label: "IP Security", href: "/#ip-security" },
+    ],
+  },
+  {
+    heading: "Contact",
+    links: [
+      { label: "info@bostonsemiconductor.com", href: "mailto:info@bostonsemiconductor.com" },
+      { label: "Dhaka, Bangladesh" },
+      { label: "Management: USA" },
+    ],
+  },
+];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border-default bg-bg-surface text-text-primary">
-      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-3">
-          <div>
-            <p className="text-h6">{siteConfig.name}</p>
-            <p className="text-body-sm mt-2 text-text-secondary">{siteConfig.tagline}</p>
+    <footer className="flex flex-col items-center justify-center gap-16 px-4 py-6">
+      <div className="flex w-full max-w-[1316px] flex-col gap-12">
+        <div className="flex flex-wrap items-start justify-between gap-8">
+          <div className="flex min-w-[280px] flex-col gap-6">
+            <Image
+              src="/images/logo-mark.svg"
+              alt={siteConfig.name}
+              width={102}
+              height={42}
+              className="h-[42px] w-auto"
+            />
+            <p className="max-w-[280px] text-body text-text-secondary">
+              Premier VLSI design services, headquartered in the USA with a
+              design center in Dhaka, Bangladesh.
+            </p>
           </div>
 
-          {siteConfig.footerColumns.map((column) => (
-            <div key={column.title}>
-              <h4 className="text-label-sm uppercase text-text-primary">
-                {column.title}
-              </h4>
-              <ul className="mt-4 space-y-2">
-                {column.links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-body-sm text-text-secondary transition-colors hover:text-text-primary"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border-default pt-8 sm:flex-row">
-          <p className="text-body-sm text-text-disabled">
-            &copy; {currentYear} {siteConfig.name}. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            {siteConfig.socialLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-body-sm text-text-disabled transition-colors hover:text-text-primary"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {link.label}
-              </Link>
+          <div className="flex flex-1 flex-wrap gap-8 sm:justify-end">
+            {footerColumns.map((column) => (
+              <div key={column.heading} className="flex min-w-[160px] flex-col gap-4">
+                <h3 className="text-mono text-text-secondary">{column.heading}</h3>
+                <ul className="flex flex-col gap-4">
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      {link.href ? (
+                        <Link
+                          href={link.href}
+                          className="text-body text-text-primary transition-colors hover:text-brand-primary"
+                        >
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <span className="text-body text-text-primary">
+                          {link.label}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
+        </div>
+
+        <div className="flex items-center justify-center border-t border-border-default pt-8">
+          <p className="text-center text-body-sm text-text-secondary">
+            &copy; {currentYear} {siteConfig.name} Pvt Ltd. All rights
+            reserved.
+          </p>
         </div>
       </div>
     </footer>

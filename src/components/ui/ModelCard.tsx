@@ -9,6 +9,7 @@ export interface ModelCardProps {
   caption?: string;
   title: string;
   rows: ModelCardRow[];
+  highlighted?: boolean;
   className?: string;
   as?: ElementType;
 }
@@ -17,12 +18,13 @@ export function ModelCard({
   caption = "Caption",
   title,
   rows,
+  highlighted = true,
   className = "",
   as: Component = "div",
 }: ModelCardProps) {
   return (
     <Component
-      className={`group relative flex w-full flex-col gap-8 overflow-hidden rounded-3xl border-[6px] border-brand-primary bg-bg-base p-12 transition-colors hover:bg-bg-surface-raised ${className}`}
+      className={`group relative flex w-full flex-col gap-8 overflow-hidden rounded-3xl bg-bg-base p-12 transition-colors hover:bg-bg-surface-raised ${highlighted ? "border-[6px] border-brand-primary" : ""} ${className}`}
     >
       <div
         aria-hidden="true"

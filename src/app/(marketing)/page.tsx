@@ -1,18 +1,27 @@
-import { homeContent } from "@/lib/config/home";
-import { AboutSection } from "@/components/sections/AboutSection";
-import { CtaSection } from "@/components/sections/CtaSection";
+import { BlogSection } from "@/components/sections/BlogSection";
+import { ContactSection } from "@/components/sections/ContactSection";
+import { EngagementModels } from "@/components/sections/EngagementModels";
 import { HeroSection } from "@/components/sections/HeroSection";
-import { ServicesSection } from "@/components/sections/ServicesSection";
-import { StatsSection } from "@/components/sections/StatsSection";
+import { MissionStatement } from "@/components/sections/MissionStatement";
+import { ProcessBreakdown } from "@/components/sections/ProcessBreakdown";
+import { SecuritySection } from "@/components/sections/SecuritySection";
+import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { StatsBar } from "@/components/sections/StatsBar";
+import { WhyUsSection } from "@/components/sections/WhyUsSection";
 
 export default function HomePage() {
   return (
     <>
-      <HeroSection content={homeContent.hero} />
-      <ServicesSection services={homeContent.services} />
-      <StatsSection stats={homeContent.stats} />
-      <AboutSection content={homeContent.about} />
-      <CtaSection content={homeContent.cta} />
+      <HeroSection />
+      <StatsBar />
+      <MissionStatement />
+      <ServicesGrid />
+      <ProcessBreakdown />
+      <EngagementModels />
+      <SecuritySection />
+      <WhyUsSection />
+      <BlogSection />
+      <ContactSection />
     </>
   );
 }

@@ -39,6 +39,10 @@ export interface InputFieldProps
   message?: InputFieldMessage;
   onClear?: () => void;
   className?: string;
+  /** Renders a `<textarea>` instead of a single-line `<input>`. */
+  multiline?: boolean;
+  /** Visible text rows when `multiline` is set. */
+  rows?: number;
 }
 
 const sizeStyles: Record<
@@ -189,6 +193,8 @@ export function InputField({
   onChange,
   id,
   type = "text",
+  multiline = false,
+  rows = 4,
   ...props
 }: InputFieldProps) {
   const generatedId = useId();
@@ -225,11 +231,11 @@ export function InputField({
           : "text-text-secondary";
 
   const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       if (!isControlled) {
         setInternalValue(event.target.value);
       }
-      onChange?.(event);
+      onChange?.(event as ChangeEvent<HTMLInputElement>);
     },
     [isControlled, onChange],
   );
@@ -288,7 +294,7 @@ export function InputField({
       ) : null}
 
       <div
-        className={`flex items-center gap-2 rounded-lg bg-bg-base transition-colors ${styles.container} ${borderClass} ${readOnly ? "cursor-default" : ""}`}
+        className={`flex gap-2 rounded-lg bg-bg-base transition-colors ${styles.container} ${borderClass} ${readOnly ? "cursor-default" : ""} ${multiline ? "flex-1 items-start" : "items-center"}`}
       >
         {leadingIcon ? (
           <span
@@ -304,30 +310,48 @@ export function InputField({
           </span>
         ) : null}
 
-        <input
-          id={inputId}
-          type={inputType}
-          value={currentValue}
-          placeholder={placeholder}
-          disabled={isDisabled}
-          readOnly={readOnly}
-          maxLength={maxLength}
-          onChange={handleChange}
-          aria-invalid={resolvedMessage?.type === "error" || undefined}
-          aria-describedby={showBottomRow ? messageId : undefined}
-          className={`min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-secondary ${
-            hasValue ? "text-text-primary" : "text-text-secondary"
-          } ${styles.input} ${readOnly ? "cursor-default" : ""}`}
-          {...props}
-        />
+        {multiline ? (
+          <textarea
+            id={inputId}
+            value={currentValue}
+            placeholder={placeholder}
+            disabled={isDisabled}
+            readOnly={readOnly}
+            maxLength={maxLength}
+            rows={rows}
+            onChange={handleChange}
+            aria-invalid={resolvedMessage?.type === "error" || undefined}
+            aria-describedby={showBottomRow ? messageId : undefined}
+            className={`min-w-0 flex-1 resize-none bg-transparent outline-none placeholder:text-text-secondary ${
+              hasValue ? "text-text-primary" : "text-text-secondary"
+            } ${styles.input} ${readOnly ? "cursor-default" : ""}`}
+          />
+        ) : (
+          <input
+            id={inputId}
+            type={inputType}
+            value={currentValue}
+            placeholder={placeholder}
+            disabled={isDisabled}
+            readOnly={readOnly}
+            maxLength={maxLength}
+            onChange={handleChange}
+            aria-invalid={resolvedMessage?.type === "error" || undefined}
+            aria-describedby={showBottomRow ? messageId : undefined}
+            className={`min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-secondary ${
+              hasValue ? "text-text-primary" : "text-text-secondary"
+            } ${styles.input} ${readOnly ? "cursor-default" : ""}`}
+            {...props}
+          />
+        )}
 
-        {showSuffix ? (
+        {showSuffix && !multiline ? (
           <span className={`shrink-0 text-text-secondary ${styles.input}`}>
             {suffix}
           </span>
         ) : null}
 
-        {showClearButton && hasValue && !readOnly && !isDisabled ? (
+        {showClearButton && hasValue && !readOnly && !isDisabled && !multiline ? (
           <button
             type="button"
             onClick={handleClear}
@@ -338,7 +362,7 @@ export function InputField({
           </button>
         ) : null}
 
-        {passwordToggle && !loading ? (
+        {passwordToggle && !loading && !multiline ? (
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}

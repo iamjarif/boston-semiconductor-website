@@ -2,7 +2,7 @@ import type { ElementType, ReactNode } from "react";
 
 export interface CardProps {
   title: string;
-  subText?: string;
+  subText?: ReactNode;
   caption?: string;
   showCaption?: boolean;
   icon?: ReactNode;
@@ -44,7 +44,7 @@ export function Card({
         <h3 className="text-h5 text-text-primary">{title}</h3>
 
         {subText ? (
-          <p className="text-body-sm text-text-secondary">{subText}</p>
+          <div className="text-body-sm text-text-secondary">{subText}</div>
         ) : null}
       </div>
     </Component>

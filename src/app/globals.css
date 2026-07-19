@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 @import "../styles/typography.css";
+@import "lenis/dist/lenis.css";
 
 :root {
   /* Brand */
@@ -43,6 +44,13 @@
   --color-neutral-800: #d4d4d4;
   --color-neutral-900: #f7f8f8;
 
+  /* Layout */
+  /* Pre-hydration/no-JS fallback only (~Figma nav frame height). Once
+     NavigationBar mounts, it measures its own rendered height and overwrites
+     this var via ResizeObserver, so this value is never the source of truth
+     for layout after hydration. */
+  --layout-nav-height: 5.8125rem;
+
   /* Button gradients — exact Figma stops, 180deg */
   --gradient-button-primary: linear-gradient(
     180deg,
@@ -70,6 +78,27 @@
   --font-heading: var(--font-heading);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+}
+
+/*
+ * Minimum height for content sitting below the fixed nav. `svh` (small
+ * viewport height, i.e. viewport height assuming mobile browser chrome is
+ * fully expanded) is preferred over `dvh` here: `dvh` recalculates as a
+ * mobile browser's chrome collapses on scroll, which would visibly resize
+ * elements sized against it — exactly the kind of jank we don't want in a
+ * hero. `vh` is a fallback for browsers that don't support `svh`. Written as
+ * a single hand-rolled rule — rather than two separate Tailwind
+ * arbitrary-value utilities — because Tailwind can reorder same-property
+ * utilities in its generated output, which would silently let the
+ * less-precise `vh` value win.
+ */
+@utility min-h-viewport-below-nav {
+  min-height: calc(100vh - var(--layout-nav-height));
+  min-height: calc(100svh - var(--layout-nav-height));
+}
+
+html {
+  scroll-padding-top: var(--layout-nav-height);
 }
 
 body {
