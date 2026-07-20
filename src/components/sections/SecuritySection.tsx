@@ -91,7 +91,7 @@ export function SecuritySection() {
           </p>
         </div>
 
-        <div className="grid w-full flex-1 grid-cols-1 gap-8 sm:grid-cols-2">
+        <div className="grid w-full flex-1 grid-cols-1 gap-6 sm:grid-cols-2">
           {securityCards.map((card) => (
             <Card
               key={card.title + card.bullets[0]}

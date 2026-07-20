@@ -8,6 +8,5 @@ export const REVEAL_VIEWPORT = { once: true, amount: 0.25 } as const;
 
 export const NAV_INTRO_DURATION = 0.65;
 
-export const SPLIT_TEXT_DURATION = 0.75;
-export const SPLIT_TEXT_STAGGER = 0.07;
-export const SPLIT_TEXT_Y = 28;
+export const BUTTON_REVEAL_DURATION = 0.3;
+export const BUTTON_REVEAL_EASE: Easing = [0.22, 1, 0.36, 1];

@@ -162,18 +162,20 @@ export function NavigationBar({
           aria-label="Main navigation"
         >
           {links.map((link) => (
-            <Link
+            <Button
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2 text-body font-semibold leading-[1.3] text-text-primary transition-colors hover:bg-bg-surface-raised"
+              variant="ghost"
+              size="l"
+              className="px-3 py-2"
             >
               {link.label}
-            </Link>
+            </Button>
           ))}
         </nav>
 
         <div className="hidden w-[200px] shrink-0 items-center justify-end md:flex">
-          <Button href={ctaHref} variant="outline" size="l">
+          <Button href={ctaHref} variant="outline" size="m">
             {ctaLabel}
           </Button>
         </div>
@@ -219,18 +221,20 @@ export function NavigationBar({
         >
           <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
             {links.map((link) => (
-              <Link
+              <Button
                 key={link.href}
                 href={link.href}
+                variant="ghost"
+                size="l"
+                className="w-full justify-start px-3 py-3"
                 onClick={() => setIsMenuOpen(false)}
-                className="rounded-lg px-3 py-3 text-body font-semibold text-text-primary transition-colors hover:bg-bg-surface-raised"
               >
                 {link.label}
-              </Link>
+              </Button>
             ))}
           </nav>
           <div className="mt-4">
-            <Button href={ctaHref} variant="outline" size="l" className="w-full">
+            <Button href={ctaHref} variant="outline" size="m" className="w-full">
               {ctaLabel}
             </Button>
           </div>

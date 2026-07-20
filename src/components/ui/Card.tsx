@@ -21,7 +21,7 @@ export function Card({
 }: CardProps) {
   return (
     <Component
-      className={`group relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl bg-bg-surface p-8 transition-colors hover:border hover:border-border-strong hover:bg-bg-surface-raised ${className}`}
+      className={`group relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-bg-surface p-8 transition-colors hover:border-border-strong hover:bg-bg-surface-raised ${className}`}
     >
       <div
         aria-hidden="true"

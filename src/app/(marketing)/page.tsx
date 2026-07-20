@@ -6,14 +6,12 @@ import { MissionStatement } from "@/components/sections/MissionStatement";
 import { ProcessBreakdown } from "@/components/sections/ProcessBreakdown";
 import { SecuritySection } from "@/components/sections/SecuritySection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
-import { StatsBar } from "@/components/sections/StatsBar";
 import { WhyUsSection } from "@/components/sections/WhyUsSection";
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <StatsBar />
       <MissionStatement />
       <ServicesGrid />
       <ProcessBreakdown />

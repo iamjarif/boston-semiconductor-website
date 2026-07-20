@@ -24,7 +24,7 @@ export function ModelCard({
 }: ModelCardProps) {
   return (
     <Component
-      className={`group relative flex w-full flex-col gap-8 overflow-hidden rounded-3xl bg-bg-base p-12 transition-colors hover:bg-bg-surface-raised ${highlighted ? "border-[6px] border-brand-primary" : ""} ${className}`}
+      className={`group relative flex w-full flex-col gap-8 overflow-hidden rounded-3xl bg-bg-base p-12 transition-colors hover:bg-bg-surface-raised ${highlighted ? "border-[6px] border-brand-primary" : "border border-transparent hover:border-border-strong"} ${className}`}
     >
       <div
         aria-hidden="true"

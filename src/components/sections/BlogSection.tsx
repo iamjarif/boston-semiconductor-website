@@ -57,7 +57,7 @@ export function BlogSection() {
         </Button>
       </div>
 
-      <div className="grid w-full max-w-[1316px] grid-cols-1 gap-8 sm:grid-cols-3">
+      <div className="grid w-full max-w-[1316px] grid-cols-1 gap-6 sm:grid-cols-3">
         {blogPosts.map((post) => (
           <BlogCard
             key={post.href}

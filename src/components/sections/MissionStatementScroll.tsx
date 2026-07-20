@@ -4,11 +4,13 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLayoutEffect, useMemo, useRef } from "react";
 
-import { GlowOrb } from "@/components/ui/GlowOrb";
+import { ParallaxGlowOrb } from "@/components/ui/ParallaxGlowOrb";
 import { useLenis } from "@/components/ui/SmoothScrollProvider";
 
 const MISSION_TEXT =
   "We are a specialized semiconductor design partner, delivering silicon-proven VLSI solutions across advanced process nodes for clients in power electronics, telecommunications, automotive, and IoT.";
+
+const PARALLAX_TRAVEL = 96;
 
 export function MissionStatementScroll() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -70,6 +72,17 @@ export function MissionStatementScroll() {
       stagger: 1 / words.length,
     });
 
+    const glows = section.querySelectorAll<HTMLElement>("[data-parallax-glow]");
+    glows.forEach((el) => {
+      const speed = Number(el.dataset.parallaxSpeed ?? 0);
+      tl.fromTo(
+        el,
+        { y: 0 },
+        { y: PARALLAX_TRAVEL * speed, ease: "none" },
+        0,
+      );
+    });
+
     const refreshScrollTriggers = () => ScrollTrigger.refresh();
     window.addEventListener("resize", refreshScrollTriggers);
     ScrollTrigger.refresh();
@@ -91,21 +104,25 @@ export function MissionStatementScroll() {
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
       >
-        <GlowOrb
+        <ParallaxGlowOrb
+          speed={0.2}
           src="/images/glows/glow-mission-1.svg"
           size={299}
           className="right-[-150px] top-[100px]"
         />
-        <GlowOrb
+        <ParallaxGlowOrb
+          speed={0.3}
           src="/images/glows/glow-mission-2.svg"
           size={366}
           rotate={-165}
           className="left-[-100px] top-[250px]"
         />
-        <GlowOrb
+        <ParallaxGlowOrb
+          speed={0.4}
+          centered
           src="/images/glows/glow-mission-3.svg"
           size={524}
-          className="bottom-[-200px] left-1/2 -translate-x-1/2"
+          className="bottom-[-200px] left-1/2"
         />
       </div>
 

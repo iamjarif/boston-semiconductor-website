@@ -12,7 +12,6 @@ import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { RevealInView } from "@/components/ui/RevealInView";
-import { SplitTextReveal } from "@/components/ui/SplitTextReveal";
 
 export function HeroSectionScroll() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -61,7 +60,7 @@ export function HeroSectionScroll() {
       >
         <GlowOrb
           src="/images/glows/glow-hero.svg"
-          size={477}
+          size={600}
           className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
         />
       </div>
@@ -83,32 +82,21 @@ export function HeroSectionScroll() {
 
         <div className="flex w-full max-w-[1316px] flex-col items-center gap-8">
           <div className="flex flex-col items-center gap-3">
-            <SplitTextReveal
-              as="p"
-              className="text-mono-lg text-brand-primary"
-              delay={0}
-            >
+            <p className="text-mono-lg text-brand-primary">
               Precision VLSI Engineering
-            </SplitTextReveal>
-            <SplitTextReveal
-              as="h1"
-              className="text-h1 sm:text-title"
-              wordClassName="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-transparent"
-              delay={0.12}
-            >
-              {"Silicon Excellence\nDelivered at Scale."}
-            </SplitTextReveal>
+            </p>
+            <h1 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent sm:text-title">
+              Silicon Excellence
+              <br />
+              Delivered at Scale.
+            </h1>
           </div>
 
-          <SplitTextReveal
-            as="p"
-            className="max-w-[750px] text-h6 text-text-primary"
-            delay={0.28}
-          >
+          <p className="max-w-[750px] text-h6 text-neutral-800">
             Premium chip design services for the world&apos;s most demanding
             technology companies. From concept to tapeout, we engineer the
             future.
-          </SplitTextReveal>
+          </p>
 
           <RevealInView
             delay={0.42}

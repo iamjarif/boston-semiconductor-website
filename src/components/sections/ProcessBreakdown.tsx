@@ -82,7 +82,7 @@ export function ProcessBreakdown() {
             UNDER THE FLOORPLAN
           </p>
           <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-            How each block actually gets built.
+            How each block <br></br> actually gets built.
           </h2>
         </div>
         <p className="max-w-[750px] text-body text-text-secondary">

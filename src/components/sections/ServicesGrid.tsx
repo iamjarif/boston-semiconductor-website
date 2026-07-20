@@ -5,7 +5,6 @@ interface ServiceCardData {
   caption: string;
   title: string;
   description: string;
-  wide?: boolean;
 }
 
 const services: ServiceCardData[] = [
@@ -49,8 +48,7 @@ const services: ServiceCardData[] = [
     caption: "// 07",
     title: "AMS Verification",
     description:
-      "Our Modeling team brings deep expertise in analog behavioral modeling, enabling accurate and efficient AMS (Analog Mixed-Signal) verification of complex analog IPs. This capability strengthens our ability to validate mixed-signal designs early, reducing verification cycles and improving design-to-silicon confidence.",
-    wide: true,
+      "Our modeling team delivers deep expertise in analog behavioral modeling and AMS (Analog Mixed-Signal) verification for complex analog IPs. We enable early mixed-signal validation, reducing verification cycles while improving design-to-silicon confidence.",
   },
 ];
 
@@ -58,7 +56,7 @@ export function ServicesGrid() {
   return (
     <section
       id="services"
-      className="relative flex flex-col items-center gap-16 overflow-hidden bg-bg-surface px-4 py-24 lg:py-[140px]"
+      className="relative flex flex-col items-center gap-24 overflow-hidden bg-bg-surface px-4 py-24 lg:py-[140px]"
     >
       <div
         aria-hidden
@@ -80,19 +78,18 @@ export function ServicesGrid() {
           </h2>
         </div>
         <p className="max-w-[750px] text-body text-text-secondary">
-          Full-stack semiconductor design capability, mapped the way our
-          engineers actually think about a chip.
+          Full-stack semiconductor design capability, mapped the way <br></br> our engineers actually think about a chip.
         </p>
       </div>
 
-      <div className="relative z-10 grid w-full max-w-[1316px] grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {services.map((service) => (
+      <div className="card-focus-grid relative z-10 grid w-full max-w-[1316px] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12">
+        {services.map((service, index) => (
           <Card
             key={service.title}
             caption={service.caption}
             title={service.title}
             subText={service.description}
-            className={`!bg-bg-base ${service.wide ? "lg:col-span-2" : ""}`}
+            className={`!bg-bg-base hover:!bg-bg-surface-raised ${index < 4 ? "lg:col-span-3" : "lg:col-span-4"}`}
           />
         ))}
       </div>

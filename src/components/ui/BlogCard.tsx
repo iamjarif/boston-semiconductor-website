@@ -22,8 +22,15 @@ export function BlogCard({
 }: BlogCardProps) {
   const card = (
     <article
-      className={`group flex h-96 w-full flex-col overflow-hidden rounded-3xl bg-bg-surface transition-colors hover:border hover:border-border-strong hover:bg-bg-surface-raised ${className}`}
+      className={`group relative flex h-96 w-full flex-col overflow-hidden rounded-3xl border border-transparent bg-bg-surface transition-colors hover:border-border-strong hover:bg-bg-surface-raised ${className}`}
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/10 via-brand-primary/5 to-transparent" />
+      </div>
+
       <div className="relative h-[226px] w-full shrink-0">
         <Image
           src={imageSrc}
@@ -34,7 +41,7 @@ export function BlogCard({
         />
       </div>
 
-      <div className="flex flex-col gap-4 p-6">
+      <div className="relative flex flex-col gap-4 p-6">
         <div className="flex items-center gap-2 whitespace-nowrap text-mono-sm">
           <span className="text-brand-primary">{category}</span>
           <span className="text-text-disabled">·</span>

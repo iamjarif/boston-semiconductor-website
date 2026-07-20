@@ -1,5 +1,15 @@
+"use client";
+
 import Link from "next/link";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import {
+  useState,
+  type ComponentPropsWithoutRef,
+  type MouseEvent,
+  type MouseEventHandler,
+  type ReactNode,
+} from "react";
+
+import { ButtonLabelReveal } from "@/components/ui/ButtonLabelReveal";
 
 export type ButtonSize = "s" | "m" | "l" | "xl";
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
@@ -28,8 +38,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     "border border-neutral-900 bg-gradient-button-secondary text-text-on-brand hover:bg-gradient-button-secondary-hover",
   outline:
     "border-2 border-neutral-900 text-text-primary hover:border-neutral-800",
-  ghost:
-    "text-text-primary hover:bg-bg-surface-raised",
+  ghost: "text-text-primary",
 };
 
 const baseClasses =
@@ -45,16 +54,35 @@ export function Button({
   children,
   disabled,
   type = "button",
+  onMouseEnter,
+  onMouseLeave,
+  onClick,
   ...props
 }: ButtonProps) {
+  const [isHovered, setIsHovered] = useState(false);
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  const label = typeof children === "string" ? children : undefined;
+
+  const handleMouseEnter = (event: MouseEvent<HTMLElement>) => {
+    if (disabled) return;
+    setIsHovered(true);
+    onMouseEnter?.(event as MouseEvent<HTMLButtonElement>);
+  };
+
+  const handleMouseLeave = (event: MouseEvent<HTMLElement>) => {
+    if (disabled) return;
+    setIsHovered(false);
+    onMouseLeave?.(event as MouseEvent<HTMLButtonElement>);
+  };
 
   const content = (
     <>
       {leadingIcon ? (
         <span className="inline-flex shrink-0 items-center">{leadingIcon}</span>
       ) : null}
-      <span>{children}</span>
+      <ButtonLabelReveal label={label} disabled={disabled} hovered={isHovered}>
+        {label ? null : children}
+      </ButtonLabelReveal>
       {trailingIcon ? (
         <span className="inline-flex shrink-0 items-center">{trailingIcon}</span>
       ) : null}
@@ -63,7 +91,13 @@ export function Button({
 
   if (href && !disabled) {
     return (
-      <Link href={href} className={classes}>
+      <Link
+        href={href}
+        className={classes}
+        onClick={onClick as MouseEventHandler<HTMLAnchorElement> | undefined}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {content}
       </Link>
     );
@@ -74,6 +108,9 @@ export function Button({
       type={type}
       className={classes}
       disabled={disabled}
+      onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       {...props}
     >
       {content}

@@ -77,7 +77,7 @@ export function WhyUsSection() {
       </div>
 
       <div className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16">
-        <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-3 lg:h-[300px]">
+        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:h-[300px]">
           {firstRow.map((card) => (
             <Card
               key={card.title}
@@ -98,7 +98,7 @@ export function WhyUsSection() {
           </h2>
         </div>
 
-        <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-3 lg:h-[300px]">
+        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:h-[300px]">
           {secondRow.map((card) => (
             <Card
               key={card.title}

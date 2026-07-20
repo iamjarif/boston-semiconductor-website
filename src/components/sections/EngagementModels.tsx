@@ -66,7 +66,7 @@ export function EngagementModels() {
         </p>
       </div>
 
-      <div className="relative z-10 grid w-full max-w-[1316px] grid-cols-1 gap-8 lg:grid-cols-2">
+      <div className="relative z-10 grid w-full max-w-[1316px] grid-cols-1 gap-6 lg:grid-cols-2">
         {engagementModels.map((model) => (
           <ModelCard
             key={model.title}
