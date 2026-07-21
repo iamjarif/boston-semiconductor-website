@@ -1,5 +1,6 @@
 "use client";
 
+import { Check } from "@phosphor-icons/react/dist/ssr";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
@@ -72,6 +73,12 @@ const CARD_OPACITY_STEP = 0.12;
 const CARD_OPACITY_FLOOR = 0.7;
 const CARD_PEEK_Y_PERCENT = 3;
 const IMAGE_PARALLAX_PERCENT = 6;
+const CARD_TRANSITION_VH = 0.8;
+const CARD_HOLD_VH = 0.6;
+// Reserved above (header peek) and mirrored below (empty band) so the stage
+// stays symmetric in the viewport. Keep in sync with the stage's
+// lg:h-[calc(...)] class below, which subtracts 2x this value.
+const HEADER_PEEK_PX = 64;
 const desktopMediaQuery = "(min-width: 1024px)";
 
 function getNavHeightPx(): number {
@@ -107,10 +114,13 @@ export function ProcessBreakdownScroll() {
     const total = cards.length;
     if (total === 0) return;
 
-    const segment = total > 1 ? 1 / (total - 1) : 1;
+    const transitionCount = Math.max(total - 1, 0);
+    const totalTimelineVh =
+      total * CARD_HOLD_VH + transitionCount * CARD_TRANSITION_VH;
+    const stageHeightPx = stage.getBoundingClientRect().height;
 
-    gsap.set(cards, { yPercent: 100 });
-    gsap.set(cards[0], { yPercent: 0 });
+    gsap.set(cards, { y: stageHeightPx, yPercent: 0 });
+    gsap.set(cards[0], { y: 0, yPercent: 0 });
 
     cards.forEach((card, index) => {
       const imageInner = card.querySelector<HTMLElement>(".card-image-inner");
@@ -124,8 +134,8 @@ export function ProcessBreakdownScroll() {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: stage,
-        start: () => `top ${getNavHeightPx()}px`,
-        end: () => `+=${window.innerHeight}`,
+        start: () => `top ${getNavHeightPx() + HEADER_PEEK_PX}px`,
+        end: () => `+=${window.innerHeight * totalTimelineVh}`,
         pin: true,
         pinSpacing: true,
         scrub: true,
@@ -135,21 +145,40 @@ export function ProcessBreakdownScroll() {
     });
 
     for (let step = 1; step < total; step += 1) {
-      const position = (step - 1) * segment;
+      const transitionStart =
+        (step - 1) * (CARD_HOLD_VH + CARD_TRANSITION_VH) + CARD_HOLD_VH;
 
       for (let cardIndex = 0; cardIndex <= step; cardIndex += 1) {
         const behind = step - cardIndex;
         tl.to(
           cards[cardIndex],
           {
+            y: 0,
             yPercent: behind === 0 ? 0 : -behind * CARD_PEEK_Y_PERCENT,
             scale: 1 - behind * CARD_SCALE_STEP,
-            opacity: Math.max(CARD_OPACITY_FLOOR, 1 - behind * CARD_OPACITY_STEP),
             ease: "none",
-            duration: segment,
+            duration: CARD_TRANSITION_VH,
           },
-          position,
+          transitionStart,
         );
+
+        const content = cards[cardIndex].querySelector<HTMLElement>(
+          ".card-content",
+        );
+        if (content) {
+          tl.to(
+            content,
+            {
+              opacity: Math.max(
+                CARD_OPACITY_FLOOR,
+                1 - behind * CARD_OPACITY_STEP,
+              ),
+              ease: "none",
+              duration: CARD_TRANSITION_VH,
+            },
+            transitionStart,
+          );
+        }
       }
 
       const enteringCard = cards[step];
@@ -160,11 +189,13 @@ export function ProcessBreakdownScroll() {
       if (imageInner) {
         tl.to(
           imageInner,
-          { yPercent: 0, ease: "none", duration: segment },
-          position,
+          { yPercent: 0, ease: "none", duration: CARD_TRANSITION_VH },
+          transitionStart,
         );
       }
     }
+
+    tl.to({}, { duration: CARD_HOLD_VH });
 
     const refreshScrollTriggers = () => ScrollTrigger.refresh();
     window.addEventListener("resize", refreshScrollTriggers);
@@ -208,35 +239,49 @@ export function ProcessBreakdownScroll() {
 
       <div
         ref={stageRef}
-        className="relative z-10 flex w-full max-w-[1316px] flex-col gap-16 lg:h-[calc(100vh-var(--layout-nav-height))] lg:gap-0"
+        className="relative z-10 flex w-full max-w-[1316px] flex-col gap-16 lg:h-[calc(100vh-var(--layout-nav-height)-128px)] lg:gap-0"
       >
         {processBlocks.map((block, index) => (
           <div
             key={block.title}
-            className={`stack-card flex w-full flex-col items-center gap-8 will-change-transform lg:absolute lg:inset-0 lg:my-auto lg:h-[85%] lg:max-h-[820px] lg:flex-row lg:gap-8 lg:rounded-[32px] lg:border lg:border-border-default lg:bg-bg-surface lg:p-10 ${
-              block.imageSide === "left" ? "lg:flex-row-reverse" : ""
-            }`}
+            className="stack-card w-full will-change-transform lg:absolute lg:inset-0 lg:my-auto lg:h-[85%] lg:max-h-[820px] lg:rounded-[32px] lg:bg-bg-base lg:px-16 lg:py-16"
           >
-            <div className="flex w-full flex-col items-start gap-7 lg:w-1/2">
-              <h3 className="text-h3 text-text-primary">{block.title}</h3>
-              <p className="text-body text-text-primary">
-                {block.description}
-              </p>
-              <ul className="list-disc space-y-1 pl-6 text-body text-text-secondary">
-                {block.bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="relative h-[300px] w-full overflow-hidden rounded-3xl lg:h-[500px] lg:w-1/2">
-              <div className="card-image-inner absolute inset-0 scale-110 will-change-transform">
-                <Image
-                  src={block.image.src}
-                  alt={block.image.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 550px"
-                />
+            <div
+              className={`card-content flex w-full flex-col items-center gap-8 lg:h-full lg:flex-row lg:gap-24 ${
+                block.imageSide === "left" ? "lg:flex-row-reverse" : ""
+              }`}
+            >
+              <div className="flex w-full flex-col items-start gap-7 lg:w-[58%]">
+                <h3 className="text-h3 text-text-primary">{block.title}</h3>
+                <p className="text-body text-text-primary">
+                  {block.description}
+                </p>
+                <ul className="flex w-full flex-col text-body-sm text-text-secondary">
+                  {block.bullets.map((bullet) => (
+                    <li
+                      key={bullet}
+                      className="flex items-start gap-3 border-t border-border-default py-3"
+                    >
+                      <Check
+                        size={14}
+                        weight="bold"
+                        className="mt-[3px] shrink-0 text-brand-primary"
+                      />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="relative h-[300px] w-full overflow-hidden rounded-3xl lg:h-full lg:w-[42%]">
+                <div className="card-image-inner absolute inset-0 scale-110 will-change-transform">
+                  <Image
+                    src={block.image.src}
+                    alt={block.image.alt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 550px"
+                  />
+                </div>
               </div>
             </div>
           </div>
