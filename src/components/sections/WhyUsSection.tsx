@@ -84,6 +84,7 @@ export function WhyUsSection() {
               caption={card.caption}
               title={card.title}
               subText={card.subText}
+              hoverEffect={false}
               className={`lg:h-[200px] ${card.align === "end" ? "lg:self-end" : "lg:self-start"}`}
             />
           ))}
@@ -105,6 +106,7 @@ export function WhyUsSection() {
               caption={card.caption}
               title={card.title}
               subText={card.subText}
+              hoverEffect={false}
               className={`lg:h-[200px] ${card.align === "end" ? "lg:self-end" : "lg:self-start"}`}
             />
           ))}

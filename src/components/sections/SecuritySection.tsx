@@ -17,7 +17,7 @@ interface SecurityCardData {
 
 const securityCards: SecurityCardData[] = [
   {
-    icon: <ShieldCheck size={42} weight="light" />,
+    icon: <ShieldCheck size={42} weight="bold" />,
     title: "IP & Legal",
     bullets: [
       "NDA signed by all personnel",
@@ -26,7 +26,7 @@ const securityCards: SecurityCardData[] = [
     ],
   },
   {
-    icon: <FingerprintSimple size={42} weight="light" />,
+    icon: <FingerprintSimple size={42} weight="bold" />,
     title: "Device & Data",
     bullets: [
       "Air-gapped RTL/Netlist/GDS machines",
@@ -35,7 +35,7 @@ const securityCards: SecurityCardData[] = [
     ],
   },
   {
-    icon: <Vault size={42} weight="light" />,
+    icon: <Vault size={42} weight="bold" />,
     title: "Access Control",
     bullets: [
       "Biometric ODC room access",
@@ -44,7 +44,7 @@ const securityCards: SecurityCardData[] = [
     ],
   },
   {
-    icon: <Lock size={42} weight="light" />,
+    icon: <Lock size={42} weight="bold" />,
     title: "Device & Data",
     bullets: [
       "Encrypted VPN to client servers",
@@ -78,8 +78,8 @@ export function SecuritySection() {
       </div>
 
       <div className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-8 lg:flex-row">
-        <div className="flex flex-1 flex-col items-center gap-7 text-center">
-          <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-1 flex-col items-start gap-7 text-left">
+          <div className="flex flex-col items-start gap-3">
             <p className="text-mono-lg text-brand-primary">IP SECURITY</p>
             <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
               Your IP never leaves the ODC.
@@ -91,13 +91,14 @@ export function SecuritySection() {
           </p>
         </div>
 
-        <div className="grid w-full flex-1 grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid w-full flex-1 auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2">
           {securityCards.map((card) => (
             <Card
               key={card.title + card.bullets[0]}
               icon={card.icon}
               title={card.title}
               showCaption={false}
+              hoverEffect={false}
               subText={
                 <ul className="list-disc space-y-1 pl-5">
                   {card.bullets.map((bullet) => (

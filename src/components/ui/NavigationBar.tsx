@@ -144,7 +144,7 @@ export function NavigationBar({
       initial={{ y: reduceMotion ? 0 : "-100%" }}
       animate={{ y: isVisuallyHidden ? "-100%" : "0%" }}
       transition={{ duration: NAV_INTRO_DURATION, ease: REVEAL_EASE }}
-      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center px-4 py-6 transition-[background-color,backdrop-filter,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0 ${
+      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center px-4 py-4 transition-[background-color,backdrop-filter,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0 ${
         isScrolled
           ? "border-b border-border-default bg-bg-base/80 backdrop-blur-md"
           : "border-b border-transparent bg-transparent"

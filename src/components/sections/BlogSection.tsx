@@ -52,7 +52,7 @@ export function BlogSection() {
             Latest Insights.
           </h2>
         </div>
-        <Button href="/blog" variant="ghost" trailingIcon={<ArrowRight size={20} />}>
+        <Button href="/blog" variant="ghost" trailingIcon={<ArrowRight size={20} weight="bold" />}>
           Find More
         </Button>
       </div>

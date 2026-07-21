@@ -8,6 +8,7 @@ export interface CardProps {
   icon?: ReactNode;
   className?: string;
   as?: ElementType;
+  hoverEffect?: boolean;
 }
 
 export function Card({
@@ -18,17 +19,20 @@ export function Card({
   icon,
   className = "",
   as: Component = "div",
+  hoverEffect = true,
 }: CardProps) {
   return (
     <Component
-      className={`group relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-bg-surface p-8 transition-colors hover:border-border-strong hover:bg-bg-surface-raised ${className}`}
+      className={`relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-bg-surface p-8 ${hoverEffect ? "group transition-colors hover:border-border-strong hover:bg-bg-surface-raised" : ""} ${className}`}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/10 via-brand-primary/5 to-transparent" />
-      </div>
+      {hoverEffect ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/10 via-brand-primary/5 to-transparent" />
+        </div>
+      ) : null}
 
       <div className="relative flex flex-col gap-4">
         {icon ? (
