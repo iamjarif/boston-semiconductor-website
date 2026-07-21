@@ -75,22 +75,11 @@ const CARD_PEEK_Y_PERCENT = 3;
 const IMAGE_PARALLAX_PERCENT = 6;
 const CARD_TRANSITION_VH = 0.8;
 const CARD_HOLD_VH = 0.6;
-// Reserved above (header peek) and mirrored below (empty band) so the stage
-// stays symmetric in the viewport. Keep in sync with the stage's
-// lg:h-[calc(...)] class below, which subtracts 2x this value.
-const HEADER_PEEK_PX = 64;
 const desktopMediaQuery = "(min-width: 1024px)";
-
-function getNavHeightPx(): number {
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue("--layout-nav-height")
-    .trim();
-  const parsed = parseFloat(raw);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
 
 export function ProcessBreakdownScroll() {
   const stageRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
 
   useLayoutEffect(() => {
@@ -110,53 +99,65 @@ export function ProcessBreakdownScroll() {
     const stage = stageRef.current;
     if (!stage) return;
 
+    const header = headerRef.current;
+    if (!header) return;
+
     const cards = gsap.utils.toArray<HTMLElement>(".stack-card", stage);
     const total = cards.length;
     if (total === 0) return;
 
-    const transitionCount = Math.max(total - 1, 0);
-    const totalTimelineVh =
-      total * CARD_HOLD_VH + transitionCount * CARD_TRANSITION_VH;
+    const totalTimelineVh = total * (CARD_HOLD_VH + CARD_TRANSITION_VH);
     const stageHeightPx = stage.getBoundingClientRect().height;
 
+    gsap.set(header, { opacity: 1 });
     gsap.set(cards, { y: stageHeightPx, yPercent: 0 });
-    gsap.set(cards[0], { y: 0, yPercent: 0 });
 
-    cards.forEach((card, index) => {
+    cards.forEach((card) => {
       const imageInner = card.querySelector<HTMLElement>(".card-image-inner");
       if (!imageInner) return;
 
-      gsap.set(imageInner, {
-        yPercent: index === 0 ? 0 : IMAGE_PARALLAX_PERCENT,
-      });
+      gsap.set(imageInner, { yPercent: IMAGE_PARALLAX_PERCENT });
     });
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: stage,
-        start: () => `top ${getNavHeightPx() + HEADER_PEEK_PX}px`,
+        start: "top top",
         end: () => `+=${window.innerHeight * totalTimelineVh}`,
         pin: true,
         pinSpacing: true,
-        scrub: true,
+        scrub: 0.35,
         anticipatePin: 1,
         invalidateOnRefresh: true,
       },
     });
 
-    for (let step = 1; step < total; step += 1) {
-      const transitionStart =
-        (step - 1) * (CARD_HOLD_VH + CARD_TRANSITION_VH) + CARD_HOLD_VH;
+    for (let step = 1; step <= total; step += 1) {
+      const transitionStart = (step - 1) * (CARD_HOLD_VH + CARD_TRANSITION_VH);
 
-      for (let cardIndex = 0; cardIndex <= step; cardIndex += 1) {
-        const behind = step - cardIndex;
+      if (step === 1) {
+        // Header recedes like a card behind card 1, but never peeks above its edge.
+        tl.to(
+          header,
+          {
+            scale: 1 - CARD_SCALE_STEP,
+            opacity: Math.max(CARD_OPACITY_FLOOR, 1 - CARD_OPACITY_STEP),
+            ease: "power1.inOut",
+            duration: CARD_TRANSITION_VH,
+          },
+          transitionStart,
+        );
+      }
+
+      for (let cardIndex = 0; cardIndex < step; cardIndex += 1) {
+        const behind = step - 1 - cardIndex;
         tl.to(
           cards[cardIndex],
           {
             y: 0,
             yPercent: behind === 0 ? 0 : -behind * CARD_PEEK_Y_PERCENT,
             scale: 1 - behind * CARD_SCALE_STEP,
-            ease: "none",
+            ease: "power1.inOut",
             duration: CARD_TRANSITION_VH,
           },
           transitionStart,
@@ -173,7 +174,7 @@ export function ProcessBreakdownScroll() {
                 CARD_OPACITY_FLOOR,
                 1 - behind * CARD_OPACITY_STEP,
               ),
-              ease: "none",
+              ease: "power1.inOut",
               duration: CARD_TRANSITION_VH,
             },
             transitionStart,
@@ -181,7 +182,7 @@ export function ProcessBreakdownScroll() {
         }
       }
 
-      const enteringCard = cards[step];
+      const enteringCard = cards[step - 1];
       const imageInner = enteringCard.querySelector<HTMLElement>(
         ".card-image-inner",
       );
@@ -189,7 +190,7 @@ export function ProcessBreakdownScroll() {
       if (imageInner) {
         tl.to(
           imageInner,
-          { yPercent: 0, ease: "none", duration: CARD_TRANSITION_VH },
+          { yPercent: 0, ease: "power1.inOut", duration: CARD_TRANSITION_VH },
           transitionStart,
         );
       }
@@ -209,7 +210,7 @@ export function ProcessBreakdownScroll() {
   }, [lenis]);
 
   return (
-    <section className="relative flex flex-col items-center gap-16 overflow-clip bg-bg-base px-4 py-24 lg:py-[140px]">
+    <section className="relative flex flex-col items-center overflow-clip bg-bg-base px-4 py-24 lg:py-[140px]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
@@ -222,25 +223,28 @@ export function ProcessBreakdownScroll() {
         />
       </div>
 
-      <div className="relative z-10 flex max-w-[1316px] flex-col items-center gap-7 text-center">
-        <div className="flex flex-col items-center gap-3">
-          <p className="text-mono-lg text-brand-primary">
-            UNDER THE FLOORPLAN
-          </p>
-          <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-            How each block <br></br> actually gets built.
-          </h2>
-        </div>
-        <p className="max-w-[750px] text-body text-text-secondary">
-          The toolchains, nodes, and signoff criteria behind each service
-          area.
-        </p>
-      </div>
-
       <div
         ref={stageRef}
-        className="relative z-10 flex w-full max-w-[1316px] flex-col gap-16 lg:h-[calc(100vh-var(--layout-nav-height)-128px)] lg:gap-0"
+        className="relative z-10 flex w-full max-w-[1316px] flex-col gap-16 lg:h-screen lg:gap-0"
       >
+        <div
+          ref={headerRef}
+          className="relative flex w-full max-w-[1316px] flex-col items-center gap-7 text-center will-change-transform lg:absolute lg:inset-0 lg:max-w-none lg:justify-center"
+        >
+          <div className="flex flex-col items-center gap-3">
+            <p className="text-mono-lg text-brand-primary">
+              UNDER THE FLOORPLAN
+            </p>
+            <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
+              How each block <br></br> actually gets built.
+            </h2>
+          </div>
+          <p className="max-w-[750px] text-body text-text-secondary">
+            The toolchains, nodes, and signoff criteria behind each service
+            area.
+          </p>
+        </div>
+
         {processBlocks.map((block, index) => (
           <div
             key={block.title}
@@ -273,12 +277,12 @@ export function ProcessBreakdownScroll() {
                 </ul>
               </div>
               <div className="relative h-[300px] w-full overflow-hidden rounded-3xl lg:h-full lg:w-[42%]">
-                <div className="card-image-inner absolute inset-0 scale-110 will-change-transform">
+                <div className="card-image-inner absolute inset-0 will-change-transform">
                   <Image
                     src={block.image.src}
                     alt={block.image.alt}
                     fill
-                    className="object-cover"
+                    className="object-contain"
                     sizes="(max-width: 1024px) 100vw, 550px"
                   />
                 </div>
