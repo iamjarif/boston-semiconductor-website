@@ -82,16 +82,16 @@ export function SecuritySection() {
           <div className="flex flex-col items-start gap-3">
             <p className="text-mono-lg text-brand-primary">IP SECURITY</p>
             <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-              Your IP never leaves the ODC.
+              Your IP never <br/> leaves the ODC.
             </h2>
           </div>
           <p className="max-w-[750px] text-body text-text-secondary">
-            Enterprise-grade protection at our Bangladesh offshore
+            Enterprise-grade protection at our  Bangladesh  <br/> offshore
             development center.
           </p>
         </div>
 
-        <div className="grid w-full flex-1 auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid w-full auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:w-[760px] lg:shrink-0">
           {securityCards.map((card) => (
             <Card
               key={card.title + card.bullets[0]}

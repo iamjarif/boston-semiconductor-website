@@ -95,7 +95,7 @@ export function WhyUsSection() {
             WHY BOSTON SEMICONDUCTOR
           </p>
           <h2 className="max-w-[1316px] bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-            Built for chip teams that can&apos;t afford a leak.
+            Built for chip teams that <br /> can&apos;t afford a leak.
           </h2>
         </div>
 
