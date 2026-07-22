@@ -3,11 +3,20 @@
 import { Check } from "@phosphor-icons/react/dist/ssr";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion, useInView, useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import { GlowOrb } from "@/components/ui/GlowOrb";
+import { SectionReveal, SectionRevealItem } from "@/components/ui/SectionReveal";
 import { useLenis } from "@/components/ui/SmoothScrollProvider";
+import { sectionRevealItem } from "@/lib/motion/section-reveal-variants";
+import {
+  REVEAL_VIEWPORT,
+  SECTION_REVEAL_BLUR,
+  SECTION_REVEAL_CHILD_STAGGER,
+  SECTION_REVEAL_Y,
+} from "@/lib/motion/reveal-presets";
 
 interface ProcessBlockData {
   title: string;
@@ -77,10 +86,95 @@ const CARD_TRANSITION_VH = 0.8;
 const CARD_HOLD_VH = 0.6;
 const desktopMediaQuery = "(min-width: 1024px)";
 
+const stackCardClassName =
+  "stack-card w-full will-change-transform rounded-[32px] bg-bg-base px-8 py-8 lg:absolute lg:inset-0 lg:my-auto lg:h-[85%] lg:max-h-[820px] lg:px-16 lg:py-16";
+
+function cardContentClassName(block: ProcessBlockData) {
+  return `card-content flex w-full flex-col items-center gap-8 lg:h-full lg:flex-row lg:gap-24 ${
+    block.imageSide === "left" ? "lg:flex-row-reverse" : ""
+  }`;
+}
+
+function ProcessBlockCardContent({ block }: { block: ProcessBlockData }) {
+  return (
+    <>
+      <div className="flex w-full flex-col items-start gap-7 lg:w-[58%]">
+        <h3 className="text-h3 text-text-primary">{block.title}</h3>
+        <p className="text-body text-text-primary">{block.description}</p>
+        <ul className="flex w-full flex-col text-body-sm text-text-secondary">
+          {block.bullets.map((bullet) => (
+            <li
+              key={bullet}
+              className="flex items-start gap-3 border-t border-border-default py-3"
+            >
+              <Check
+                size={14}
+                weight="bold"
+                className="mt-[3px] shrink-0 text-brand-primary"
+              />
+              <span>{bullet}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="relative h-[300px] w-full overflow-hidden rounded-3xl lg:h-full lg:w-[42%]">
+        <div className="card-image-inner absolute inset-0 will-change-transform">
+          <Image
+            src={block.image.src}
+            alt={block.image.alt}
+            fill
+            className="object-contain"
+            sizes="(max-width: 1024px) 100vw, 550px"
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ProcessMobileCards() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, REVEAL_VIEWPORT);
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <div ref={ref} className="flex flex-col gap-16">
+      {processBlocks.map((block, index) => (
+        <div key={block.title} className={stackCardClassName}>
+          {reduceMotion ? (
+            <div className={cardContentClassName(block)}>
+              <ProcessBlockCardContent block={block} />
+            </div>
+          ) : (
+            <motion.div
+              className={cardContentClassName(block)}
+              variants={sectionRevealItem}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              transition={{ delay: index * SECTION_REVEAL_CHILD_STAGGER }}
+            >
+              <ProcessBlockCardContent block={block} />
+            </motion.div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function ProcessBreakdownScroll() {
   const stageRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useLayoutEffect(() => {
+    const mq = window.matchMedia(desktopMediaQuery);
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useLayoutEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -88,7 +182,6 @@ export function ProcessBreakdownScroll() {
     ).matches;
     if (reduceMotion) return;
 
-    const isDesktop = window.matchMedia(desktopMediaQuery).matches;
     if (!isDesktop) return;
 
     // ScrollTrigger pin/scrub requires Lenis scrollerProxy from SmoothScrollProvider.
@@ -108,11 +201,21 @@ export function ProcessBreakdownScroll() {
 
     const totalTimelineVh = total * (CARD_HOLD_VH + CARD_TRANSITION_VH);
     const stageHeightPx = stage.getBoundingClientRect().height;
+    const cardIntroBlur = `blur(${SECTION_REVEAL_BLUR})`;
 
     gsap.set(header, { opacity: 1 });
     gsap.set(cards, { y: stageHeightPx, yPercent: 0 });
 
     cards.forEach((card) => {
+      const content = card.querySelector<HTMLElement>(".card-content");
+      if (content) {
+        gsap.set(content, {
+          opacity: 0,
+          filter: cardIntroBlur,
+          y: SECTION_REVEAL_Y,
+        });
+      }
+
       const imageInner = card.querySelector<HTMLElement>(".card-image-inner");
       if (!imageInner) return;
 
@@ -174,6 +277,8 @@ export function ProcessBreakdownScroll() {
                 CARD_OPACITY_FLOOR,
                 1 - behind * CARD_OPACITY_STEP,
               ),
+              filter: "blur(0px)",
+              y: 0,
               ease: "power1.inOut",
               duration: CARD_TRANSITION_VH,
             },
@@ -207,7 +312,7 @@ export function ProcessBreakdownScroll() {
       tl.scrollTrigger?.kill();
       tl.kill();
     };
-  }, [lenis]);
+  }, [lenis, isDesktop]);
 
   return (
     <section className="relative flex flex-col items-center overflow-clip bg-bg-base px-4 py-24 lg:py-[140px]">
@@ -231,65 +336,35 @@ export function ProcessBreakdownScroll() {
           ref={headerRef}
           className="relative flex w-full max-w-[1316px] flex-col items-center gap-7 text-center will-change-transform lg:absolute lg:inset-0 lg:max-w-none lg:justify-center"
         >
-          <div className="flex flex-col items-center gap-3">
-            <p className="text-mono-lg text-brand-primary">
-              UNDER THE FLOORPLAN
-            </p>
-            <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-              How each block <br></br> actually gets built.
-            </h2>
-          </div>
-          <p className="max-w-[750px] text-body text-text-secondary">
-            The toolchains, nodes, and signoff criteria behind each service
-            area.
-          </p>
+          <SectionReveal className="flex flex-col items-center gap-7 text-center">
+            <SectionRevealItem className="flex flex-col items-center gap-7">
+              <div className="flex flex-col items-center gap-3">
+                <p className="text-mono-lg text-brand-primary">
+                  UNDER THE FLOORPLAN
+                </p>
+                <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
+                  How each block <br></br> actually gets built.
+                </h2>
+              </div>
+              <p className="max-w-[750px] text-body text-text-secondary">
+                The toolchains, nodes, and signoff criteria behind each service
+                area.
+              </p>
+            </SectionRevealItem>
+          </SectionReveal>
         </div>
 
-        {processBlocks.map((block, index) => (
-          <div
-            key={block.title}
-            className="stack-card w-full will-change-transform lg:absolute lg:inset-0 lg:my-auto lg:h-[85%] lg:max-h-[820px] lg:rounded-[32px] lg:bg-bg-base lg:px-16 lg:py-16"
-          >
-            <div
-              className={`card-content flex w-full flex-col items-center gap-8 lg:h-full lg:flex-row lg:gap-24 ${
-                block.imageSide === "left" ? "lg:flex-row-reverse" : ""
-              }`}
-            >
-              <div className="flex w-full flex-col items-start gap-7 lg:w-[58%]">
-                <h3 className="text-h3 text-text-primary">{block.title}</h3>
-                <p className="text-body text-text-primary">
-                  {block.description}
-                </p>
-                <ul className="flex w-full flex-col text-body-sm text-text-secondary">
-                  {block.bullets.map((bullet) => (
-                    <li
-                      key={bullet}
-                      className="flex items-start gap-3 border-t border-border-default py-3"
-                    >
-                      <Check
-                        size={14}
-                        weight="bold"
-                        className="mt-[3px] shrink-0 text-brand-primary"
-                      />
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="relative h-[300px] w-full overflow-hidden rounded-3xl lg:h-full lg:w-[42%]">
-                <div className="card-image-inner absolute inset-0 will-change-transform">
-                  <Image
-                    src={block.image.src}
-                    alt={block.image.alt}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 1024px) 100vw, 550px"
-                  />
-                </div>
+        {isDesktop ? (
+          processBlocks.map((block) => (
+            <div key={block.title} className={stackCardClassName}>
+              <div className={cardContentClassName(block)}>
+                <ProcessBlockCardContent block={block} />
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <ProcessMobileCards />
+        )}
       </div>
     </section>
   );

@@ -8,6 +8,11 @@ import type { ReactNode } from "react";
 
 import { Card } from "@/components/ui/Card";
 import { GlowOrb } from "@/components/ui/GlowOrb";
+import {
+  SectionReveal,
+  SectionRevealGroup,
+  SectionRevealItem,
+} from "@/components/ui/SectionReveal";
 
 interface SecurityCardData {
   icon: ReactNode;
@@ -77,39 +82,41 @@ export function SecuritySection() {
         />
       </div>
 
-      <div className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-8 lg:flex-row">
-        <div className="flex flex-1 flex-col items-start gap-7 text-left">
+      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-8 lg:flex-row">
+        <SectionRevealItem className="flex flex-1 flex-col items-start gap-7 text-left">
           <div className="flex flex-col items-start gap-3">
             <p className="text-mono-lg text-brand-primary">IP SECURITY</p>
             <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-              Your IP never <br/> leaves the ODC.
+              Your IP never <br /> leaves the ODC.
             </h2>
           </div>
           <p className="max-w-[750px] text-body text-text-secondary">
-            Enterprise-grade protection at our  Bangladesh  <br/> offshore
+            Enterprise-grade protection at our Bangladesh <br /> offshore
             development center.
           </p>
-        </div>
+        </SectionRevealItem>
 
-        <div className="grid w-full auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:w-[760px] lg:shrink-0">
+        <SectionRevealGroup className="grid w-full auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 lg:w-[760px] lg:shrink-0">
           {securityCards.map((card) => (
-            <Card
-              key={card.title + card.bullets[0]}
-              icon={card.icon}
-              title={card.title}
-              showCaption={false}
-              hoverEffect={false}
-              subText={
-                <ul className="list-disc space-y-1 pl-5">
-                  {card.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              }
-            />
+            <SectionRevealItem key={card.title + card.bullets[0]}>
+              <Card
+                icon={card.icon}
+                title={card.title}
+                showCaption={false}
+                hoverEffect={false}
+                className="h-full"
+                subText={
+                  <ul className="list-disc space-y-1 pl-5">
+                    {card.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                }
+              />
+            </SectionRevealItem>
           ))}
-        </div>
-      </div>
+        </SectionRevealGroup>
+      </SectionReveal>
     </section>
   );
 }

@@ -2,6 +2,11 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 
 import { BlogCard } from "@/components/ui/BlogCard";
 import { Button } from "@/components/ui/Button";
+import {
+  SectionReveal,
+  SectionRevealGroup,
+  SectionRevealItem,
+} from "@/components/ui/SectionReveal";
 
 interface BlogPostData {
   title: string;
@@ -45,31 +50,38 @@ const blogPosts: BlogPostData[] = [
 export function BlogSection() {
   return (
     <section className="flex flex-col items-center gap-16 bg-bg-base px-4 py-24 lg:py-[140px]">
-      <div className="flex w-full max-w-[1316px] flex-col items-center gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-1 flex-col items-center gap-3 text-center sm:items-start sm:text-left">
-          <p className="text-mono-lg text-brand-primary">Blogs</p>
-          <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-            Latest Insights.
-          </h2>
-        </div>
-        <Button href="/blog" variant="ghost" trailingIcon={<ArrowRight size={20} weight="bold" />}>
-          Find More
-        </Button>
-      </div>
+      <SectionReveal className="flex w-full max-w-[1316px] flex-col items-center gap-16">
+        <SectionRevealItem className="flex w-full flex-col items-center gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-1 flex-col items-center gap-3 text-center sm:items-start sm:text-left">
+            <p className="text-mono-lg text-brand-primary">Blogs</p>
+            <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
+              Latest Insights.
+            </h2>
+          </div>
+          <Button
+            href="/blog"
+            variant="ghost"
+            trailingIcon={<ArrowRight size={20} weight="bold" />}
+          >
+            Find More
+          </Button>
+        </SectionRevealItem>
 
-      <div className="grid w-full max-w-[1316px] grid-cols-1 gap-6 sm:grid-cols-3">
-        {blogPosts.map((post) => (
-          <BlogCard
-            key={post.href}
-            title={post.title}
-            category={post.category}
-            date={post.date}
-            imageSrc={post.imageSrc}
-            imageAlt={post.imageAlt}
-            href={post.href}
-          />
-        ))}
-      </div>
+        <SectionRevealGroup className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
+          {blogPosts.map((post) => (
+            <SectionRevealItem key={post.href}>
+              <BlogCard
+                title={post.title}
+                category={post.category}
+                date={post.date}
+                imageSrc={post.imageSrc}
+                imageAlt={post.imageAlt}
+                href={post.href}
+              />
+            </SectionRevealItem>
+          ))}
+        </SectionRevealGroup>
+      </SectionReveal>
     </section>
   );
 }

@@ -1,4 +1,8 @@
-import { Card } from "@/components/ui/Card";
+"use client";
+
+import { useRef } from "react";
+
+import { WhyUsParallaxCards } from "@/components/sections/WhyUsParallaxCards";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 
 interface WhyUsCardData {
@@ -57,8 +61,13 @@ const firstRow = whyUsCards.slice(0, 3);
 const secondRow = whyUsCards.slice(3);
 
 export function WhyUsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
-    <section className="relative flex flex-col items-center gap-16 overflow-hidden bg-bg-base px-4 py-24 lg:py-[140px]">
+    <section
+      ref={sectionRef}
+      className="relative flex flex-col items-center gap-16 overflow-hidden bg-bg-base px-4 py-24 lg:py-[140px]"
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
@@ -77,40 +86,11 @@ export function WhyUsSection() {
       </div>
 
       <div className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16">
-        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:h-[300px]">
-          {firstRow.map((card) => (
-            <Card
-              key={card.title}
-              caption={card.caption}
-              title={card.title}
-              subText={card.subText}
-              hoverEffect={false}
-              className={`lg:h-[200px] ${card.align === "end" ? "lg:self-end" : "lg:self-start"}`}
-            />
-          ))}
-        </div>
-
-        <div className="flex flex-col items-center gap-3 text-center">
-          <p className="text-mono-lg text-brand-primary">
-            WHY BOSTON SEMICONDUCTOR
-          </p>
-          <h2 className="max-w-[1316px] bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-            Built for chip teams that <br /> can&apos;t afford a leak.
-          </h2>
-        </div>
-
-        <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:h-[300px]">
-          {secondRow.map((card) => (
-            <Card
-              key={card.title}
-              caption={card.caption}
-              title={card.title}
-              subText={card.subText}
-              hoverEffect={false}
-              className={`lg:h-[200px] ${card.align === "end" ? "lg:self-end" : "lg:self-start"}`}
-            />
-          ))}
-        </div>
+        <WhyUsParallaxCards
+          sectionRef={sectionRef}
+          firstRow={firstRow}
+          secondRow={secondRow}
+        />
       </div>
     </section>
   );

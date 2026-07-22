@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { InputField, type InputFieldMessage } from "@/components/ui/InputField";
+import { SectionReveal, SectionRevealItem } from "@/components/ui/SectionReveal";
 
 interface ContactFormState {
   fullName: string;
@@ -78,8 +79,8 @@ export function ContactSection() {
         />
       </div>
 
-      <div className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16 py-16 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
-        <div className="flex flex-col items-center gap-7 text-center lg:max-w-[558px] lg:items-start lg:text-left">
+      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16 py-16 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+        <SectionRevealItem className="flex flex-col items-center gap-7 text-center lg:max-w-[558px] lg:items-start lg:text-left">
           <div className="flex flex-col items-center gap-3 lg:items-start">
             <p className="text-mono-lg text-border-button">
               LET&apos;S BUILD TOGETHER
@@ -92,58 +93,63 @@ export function ContactSection() {
             Tell us about your project - we&apos;ll get back within one
             business day.
           </p>
-        </div>
+        </SectionRevealItem>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex w-full flex-col gap-4 lg:max-w-[499px]"
-          noValidate
-        >
-          <InputField
-            label="Full Name"
-            placeholder="Full Name"
-            showLabel={false}
-            required
-            value={form.fullName}
-            onChange={(event) =>
-              setForm((prev) => ({ ...prev, fullName: event.target.value }))
-            }
-            message={fullNameMessage}
-            showHelperText={Boolean(fullNameMessage)}
-          />
-          <InputField
-            label="Company"
-            placeholder="Company"
-            showLabel={false}
-            showHelperText={false}
-            value={form.company}
-            onChange={(event) =>
-              setForm((prev) => ({ ...prev, company: event.target.value }))
-            }
-          />
-          <InputField
-            label="Project description"
-            placeholder="Describe your project..."
-            showLabel={false}
-            showHelperText={false}
-            multiline
-            rows={6}
-            className="flex-1"
-            value={form.description}
-            onChange={(event) =>
-              setForm((prev) => ({ ...prev, description: event.target.value }))
-            }
-          />
-          <Button type="submit" variant="secondary" size="xl">
-            Discuss Your Project
-          </Button>
-          {submitted ? (
-            <p className="text-body-sm text-semantic-success" role="status">
-              Thanks &mdash; we&apos;ll be in touch within one business day.
-            </p>
-          ) : null}
-        </form>
-      </div>
+        <SectionRevealItem className="w-full lg:max-w-[499px]">
+          <form
+            onSubmit={handleSubmit}
+            className="flex w-full flex-col gap-4"
+            noValidate
+          >
+            <InputField
+              label="Full Name"
+              placeholder="Full Name"
+              showLabel={false}
+              required
+              value={form.fullName}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, fullName: event.target.value }))
+              }
+              message={fullNameMessage}
+              showHelperText={Boolean(fullNameMessage)}
+            />
+            <InputField
+              label="Company"
+              placeholder="Company"
+              showLabel={false}
+              showHelperText={false}
+              value={form.company}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, company: event.target.value }))
+              }
+            />
+            <InputField
+              label="Project description"
+              placeholder="Describe your project..."
+              showLabel={false}
+              showHelperText={false}
+              multiline
+              rows={6}
+              className="flex-1"
+              value={form.description}
+              onChange={(event) =>
+                setForm((prev) => ({
+                  ...prev,
+                  description: event.target.value,
+                }))
+              }
+            />
+            <Button type="submit" variant="secondary" size="xl">
+              Discuss Your Project
+            </Button>
+            {submitted ? (
+              <p className="text-body-sm text-semantic-success" role="status">
+                Thanks &mdash; we&apos;ll be in touch within one business day.
+              </p>
+            ) : null}
+          </form>
+        </SectionRevealItem>
+      </SectionReveal>
     </section>
   );
 }

@@ -11,7 +11,7 @@ import { useRef } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
-import { RevealInView } from "@/components/ui/RevealInView";
+import { SectionReveal, SectionRevealItem } from "@/components/ui/SectionReveal";
 
 export function HeroSectionScroll() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -80,8 +80,8 @@ export function HeroSectionScroll() {
         */}
         <div className="flex-[0.92]" aria-hidden="true" />
 
-        <div className="flex w-full max-w-[1316px] flex-col items-center gap-8">
-          <div className="flex flex-col items-center gap-3">
+        <SectionReveal className="flex w-full max-w-[1316px] flex-col items-center gap-8">
+          <SectionRevealItem className="flex flex-col items-center gap-3">
             <p className="text-mono-lg text-brand-primary">
               Precision VLSI Engineering
             </p>
@@ -90,26 +90,26 @@ export function HeroSectionScroll() {
               <br />
               Delivered at Scale.
             </h1>
-          </div>
+          </SectionRevealItem>
 
-          <p className="max-w-[750px] text-h6 text-neutral-800">
+          <SectionRevealItem
+            as="p"
+            className="max-w-[750px] text-h6 text-neutral-800"
+          >
             Premium chip design services for the world&apos;s most demanding
             technology companies. From concept to tapeout, we engineer the
             future.
-          </p>
+          </SectionRevealItem>
 
-          <RevealInView
-            delay={0.42}
-            className="flex flex-wrap items-center justify-center gap-4"
-          >
+          <SectionRevealItem className="flex flex-wrap items-center justify-center gap-4">
             <Button href="#contact" variant="primary" size="xl">
               Discuss Your Project
             </Button>
             <Button href="#services" variant="secondary" size="xl">
               Explore Services
             </Button>
-          </RevealInView>
-        </div>
+          </SectionRevealItem>
+        </SectionReveal>
 
         <div className="flex-[1.08]" aria-hidden="true" />
       </div>

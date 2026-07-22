@@ -1,5 +1,10 @@
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { ModelCard, type ModelCardRow } from "@/components/ui/ModelCard";
+import {
+  SectionReveal,
+  SectionRevealGroup,
+  SectionRevealItem,
+} from "@/components/ui/SectionReveal";
 
 interface EngagementModelData {
   caption: string;
@@ -51,32 +56,35 @@ export function EngagementModels() {
         />
       </div>
 
-      <div className="relative z-10 flex max-w-[1316px] flex-col items-center gap-7 text-center">
-        <div className="flex flex-col items-center gap-3">
-          <p className="text-mono-lg text-brand-primary">
-            ENGAGEMENT MODELS
+      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16">
+        <SectionRevealItem className="flex flex-col items-center gap-7 text-center">
+          <div className="flex flex-col items-center gap-3">
+            <p className="text-mono-lg text-brand-primary">
+              ENGAGEMENT MODELS
+            </p>
+            <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
+              Two ways to work with us.
+            </h2>
+          </div>
+          <p className="max-w-[750px] text-body text-text-secondary">
+            Flexible delivery structures, built around how chip projects
+            actually run.
           </p>
-          <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-            Two ways to work with us.
-          </h2>
-        </div>
-        <p className="max-w-[750px] text-body text-text-secondary">
-          Flexible delivery structures, built around how chip projects
-          actually run.
-        </p>
-      </div>
+        </SectionRevealItem>
 
-      <div className="relative z-10 grid w-full max-w-[1316px] grid-cols-1 gap-6 lg:grid-cols-2">
-        {engagementModels.map((model) => (
-          <ModelCard
-            key={model.title}
-            caption={model.caption}
-            title={model.title}
-            rows={model.rows}
-            highlighted={model.highlighted}
-          />
-        ))}
-      </div>
+        <SectionRevealGroup className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+          {engagementModels.map((model) => (
+            <SectionRevealItem key={model.title}>
+              <ModelCard
+                caption={model.caption}
+                title={model.title}
+                rows={model.rows}
+                highlighted={model.highlighted}
+              />
+            </SectionRevealItem>
+          ))}
+        </SectionRevealGroup>
+      </SectionReveal>
     </section>
   );
 }

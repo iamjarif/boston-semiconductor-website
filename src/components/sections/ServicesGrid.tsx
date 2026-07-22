@@ -1,5 +1,10 @@
 import { Card } from "@/components/ui/Card";
 import { GlowOrb } from "@/components/ui/GlowOrb";
+import {
+  SectionReveal,
+  SectionRevealGroup,
+  SectionRevealItem,
+} from "@/components/ui/SectionReveal";
 
 interface ServiceCardData {
   caption: string;
@@ -70,29 +75,36 @@ export function ServicesGrid() {
         />
       </div>
 
-      <div className="relative z-10 flex max-w-[1316px] flex-col items-center gap-7 text-center">
-        <div className="flex flex-col items-center gap-3">
-          <p className="text-mono-lg text-brand-primary">CORE SERVICES</p>
-          <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-            Our Expertise.
-          </h2>
-        </div>
-        <p className="max-w-[750px] text-body text-text-secondary">
-          Full-stack semiconductor design capability, mapped the way <br></br> our engineers actually think about a chip.
-        </p>
-      </div>
+      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-24">
+        <SectionRevealItem className="flex flex-col items-center gap-7 text-center">
+          <div className="flex flex-col items-center gap-3">
+            <p className="text-mono-lg text-brand-primary">CORE SERVICES</p>
+            <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
+              Our Expertise.
+            </h2>
+          </div>
+          <p className="max-w-[750px] text-body text-text-secondary">
+            Full-stack semiconductor design capability, mapped the way <br></br>{" "}
+            our engineers actually think about a chip.
+          </p>
+        </SectionRevealItem>
 
-      <div className="card-focus-grid relative z-10 grid w-full max-w-[1316px] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12">
-        {services.map((service, index) => (
-          <Card
-            key={service.title}
-            caption={service.caption}
-            title={service.title}
-            subText={service.description}
-            className={`!bg-bg-base hover:!bg-bg-surface-raised ${index < 4 ? "lg:col-span-3" : "lg:col-span-4"}`}
-          />
-        ))}
-      </div>
+        <SectionRevealGroup className="card-focus-grid grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12">
+          {services.map((service, index) => (
+            <SectionRevealItem
+              key={service.title}
+              className={index < 4 ? "lg:col-span-3" : "lg:col-span-4"}
+            >
+              <Card
+                caption={service.caption}
+                title={service.title}
+                subText={service.description}
+                className="!bg-bg-base hover:!bg-bg-surface-raised h-full"
+              />
+            </SectionRevealItem>
+          ))}
+        </SectionRevealGroup>
+      </SectionReveal>
     </section>
   );
 }
