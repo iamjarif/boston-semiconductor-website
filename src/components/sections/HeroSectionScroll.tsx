@@ -36,6 +36,7 @@ export function HeroSectionScroll() {
   return (
     <section
       ref={sectionRef}
+      id="hero"
       className="relative -mt-[var(--layout-nav-height)] flex min-h-svh flex-col overflow-hidden bg-bg-base"
     >
       <div className="absolute inset-0 z-0">
@@ -102,10 +103,10 @@ export function HeroSectionScroll() {
           </SectionRevealItem>
 
           <SectionRevealItem className="flex flex-wrap items-center justify-center gap-4">
-            <Button href="#contact" variant="primary" size="xl">
+            <Button sectionId="contact" variant="primary" size="xl">
               Discuss Your Project
             </Button>
-            <Button href="#services" variant="secondary" size="xl">
+            <Button sectionId="services" variant="secondary" size="xl">
               Explore Services
             </Button>
           </SectionRevealItem>

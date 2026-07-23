@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { ButtonLabelReveal } from "@/components/ui/ButtonLabelReveal";
+import { useScrollToSection } from "@/lib/navigation/use-scroll-to-section";
 
 export type ButtonSize = "s" | "m" | "l" | "xl";
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
@@ -21,6 +22,8 @@ export interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
   href?: string;
+  sectionId?: string;
+  active?: boolean;
   className?: string;
 }
 
@@ -48,6 +51,8 @@ export function Button({
   variant = "primary",
   size = "m",
   href,
+  sectionId,
+  active = false,
   leadingIcon,
   trailingIcon,
   className = "",
@@ -60,8 +65,16 @@ export function Button({
   ...props
 }: ButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  const scrollToSection = useScrollToSection();
+  const activeClasses =
+    active && variant === "ghost"
+      ? "relative text-brand-primary after:absolute after:inset-x-2 after:bottom-1 after:h-0.5 after:rounded-full after:bg-brand-primary after:content-['']"
+      : active && variant === "outline"
+        ? "border-brand-primary text-brand-primary"
+        : "";
+  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${activeClasses} ${className}`;
   const label = typeof children === "string" ? children : undefined;
+  const ariaCurrent = active ? ("page" as const) : undefined;
 
   const handleMouseEnter = (event: MouseEvent<HTMLElement>) => {
     if (disabled) return;
@@ -89,11 +102,31 @@ export function Button({
     </>
   );
 
+  if (sectionId && !disabled) {
+    return (
+      <button
+        type="button"
+        className={classes}
+        aria-current={ariaCurrent}
+        onClick={(event) => {
+          onClick?.(event);
+          scrollToSection(sectionId);
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        {...props}
+      >
+        {content}
+      </button>
+    );
+  }
+
   if (href && !disabled) {
     return (
       <Link
         href={href}
         className={classes}
+        aria-current={ariaCurrent}
         onClick={onClick as MouseEventHandler<HTMLAnchorElement> | undefined}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -108,6 +141,7 @@ export function Button({
       type={type}
       className={classes}
       disabled={disabled}
+      aria-current={ariaCurrent}
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

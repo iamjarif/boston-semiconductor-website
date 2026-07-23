@@ -1,5 +1,7 @@
 import { defineField, defineType } from "sanity";
 
+import { blogCategories } from "./categories";
+
 export const post = defineType({
   name: "post",
   title: "Blog Post",
@@ -19,11 +21,23 @@ export const post = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "category",
+      title: "Category",
+      type: "string",
+      options: {
+        list: [...blogCategories],
+        layout: "dropdown",
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "excerpt",
       title: "Excerpt",
       type: "text",
       rows: 3,
-      validation: (rule) => rule.required().max(300),
+      description:
+        "A short summary shown on blog listing cards (100–200 characters)",
+      validation: (rule) => rule.required().min(100).max(200),
     }),
     defineField({
       name: "publishedAt",
@@ -51,6 +65,14 @@ export const post = defineType({
       of: [{ type: "block" }],
       validation: (rule) => rule.required(),
     }),
+    defineField({
+      name: "notificationSentAt",
+      title: "Subscriber Notification Sent At",
+      type: "datetime",
+      readOnly: true,
+      description:
+        "Set automatically when the blog notification email is sent to newsletter subscribers.",
+    }),
   ],
   orderings: [
     {
@@ -60,13 +82,13 @@ export const post = defineType({
     },
   ],
   preview: {
-    select: { title: "title", date: "publishedAt" },
-    prepare({ title, date }) {
+    select: { title: "title", category: "category", date: "publishedAt" },
+    prepare({ title, category, date }) {
       return {
         title,
-        subtitle: date
-          ? new Date(date).toLocaleDateString()
-          : "No date set",
+        subtitle: [category, date ? new Date(date).toLocaleDateString() : null]
+          .filter(Boolean)
+          .join(" · "),
       };
     },
   },

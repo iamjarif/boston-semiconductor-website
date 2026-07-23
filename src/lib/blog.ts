@@ -3,8 +3,12 @@ import {
   fetchPostBySlug,
   fetchPosts,
   fetchPostsCount,
+  fetchRecentPostsExcluding,
+  fetchRelatedPosts,
 } from "@/lib/cms";
+import { estimateReadingTime } from "@/lib/blog-utils";
 import type {
+  BlogCategory,
   BlogListResult,
   BlogPost,
   GetBlogPostsOptions,
@@ -15,17 +19,22 @@ const DEFAULT_PAGE_SIZE = 10;
 function normalizePost(raw: {
   slug: string;
   title: string;
+  category: BlogPost["category"];
   excerpt: string;
   publishedAt: string;
   coverImage?: { asset?: { url: string }; alt?: string };
   body?: BlogPost["body"];
 }): BlogPost {
+  const body = raw.body ?? [];
+
   return {
     slug: raw.slug,
     title: raw.title,
+    category: raw.category,
     excerpt: raw.excerpt,
     publishedAt: raw.publishedAt,
-    body: raw.body ?? [],
+    body,
+    readingTimeMinutes: body.length > 0 ? estimateReadingTime(body) : undefined,
     coverImage: raw.coverImage?.asset?.url
       ? {
           url: raw.coverImage.asset.url,
@@ -62,6 +71,30 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   const raw = await fetchPostBySlug(slug);
   if (!raw) return null;
   return normalizePost(raw);
+}
+
+/** Fetch related posts, backfilling with recent posts if same-category results are sparse. */
+export async function getRelatedPosts(
+  slug: string,
+  category: BlogCategory,
+  limit = 3,
+): Promise<BlogPost[]> {
+  const related = await fetchRelatedPosts(slug, category, limit);
+
+  if (related.length >= limit) {
+    return related.map(normalizePost);
+  }
+
+  const backfillLimit = limit - related.length;
+  const relatedSlugs = new Set(related.map((post) => post.slug));
+  const backfill = await fetchRecentPostsExcluding(slug, limit + backfillLimit);
+
+  const combined = [
+    ...related,
+    ...backfill.filter((post) => !relatedSlugs.has(post.slug)),
+  ];
+
+  return combined.slice(0, limit).map(normalizePost);
 }
 
 /** Fetch all post slugs for generateStaticParams. */

@@ -8,54 +8,111 @@ import { InputField, type InputFieldMessage } from "@/components/ui/InputField";
 import { SectionReveal, SectionRevealItem } from "@/components/ui/SectionReveal";
 
 interface ContactFormState {
-  fullName: string;
+  name: string;
+  email: string;
   company: string;
-  description: string;
+  projectDescription: string;
 }
 
 interface ContactFormErrors {
-  fullName?: string;
+  name?: string;
+  email?: string;
+  projectDescription?: string;
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const initialFormState: ContactFormState = {
-  fullName: "",
+  name: "",
+  email: "",
   company: "",
-  description: "",
+  projectDescription: "",
 };
 
 export function ContactSection() {
   const [form, setForm] = useState<ContactFormState>(initialFormState);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const validate = (values: ContactFormState): ContactFormErrors => {
     const nextErrors: ContactFormErrors = {};
 
-    if (!values.fullName.trim()) {
-      nextErrors.fullName = "Full name is required.";
+    if (!values.name.trim()) {
+      nextErrors.name = "Full name is required.";
+    }
+
+    if (!values.email.trim()) {
+      nextErrors.email = "Email is required.";
+    } else if (!EMAIL_REGEX.test(values.email.trim())) {
+      nextErrors.email = "Please enter a valid email address.";
+    }
+
+    if (!values.projectDescription.trim()) {
+      nextErrors.projectDescription = "Project description is required.";
     }
 
     return nextErrors;
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const nextErrors = validate(form);
     setErrors(nextErrors);
+    setSubmitError(null);
 
     if (Object.keys(nextErrors).length > 0) {
       setSubmitted(false);
       return;
     }
 
-    // TODO: wire to backend/email service
-    setSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          company: form.company.trim(),
+          projectDescription: form.projectDescription.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const data = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(data?.error ?? "Something went wrong.");
+      }
+
+      setSubmitted(true);
+      setForm(initialFormState);
+    } catch (error) {
+      setSubmitted(false);
+      setSubmitError(
+        error instanceof Error ? error.message : "Something went wrong.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const fullNameMessage: InputFieldMessage | undefined = errors.fullName
-    ? { type: "error", text: errors.fullName }
+  const nameMessage: InputFieldMessage | undefined = errors.name
+    ? { type: "error", text: errors.name }
     : undefined;
+
+  const emailMessage: InputFieldMessage | undefined = errors.email
+    ? { type: "error", text: errors.email }
+    : undefined;
+
+  const projectDescriptionMessage: InputFieldMessage | undefined =
+    errors.projectDescription
+      ? { type: "error", text: errors.projectDescription }
+      : undefined;
 
   return (
     <section
@@ -106,12 +163,25 @@ export function ContactSection() {
               placeholder="Full Name"
               showLabel={false}
               required
-              value={form.fullName}
+              value={form.name}
               onChange={(event) =>
-                setForm((prev) => ({ ...prev, fullName: event.target.value }))
+                setForm((prev) => ({ ...prev, name: event.target.value }))
               }
-              message={fullNameMessage}
-              showHelperText={Boolean(fullNameMessage)}
+              message={nameMessage}
+              showHelperText={Boolean(nameMessage)}
+            />
+            <InputField
+              label="Email"
+              type="email"
+              placeholder="Email"
+              showLabel={false}
+              required
+              value={form.email}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, email: event.target.value }))
+              }
+              message={emailMessage}
+              showHelperText={Boolean(emailMessage)}
             />
             <InputField
               label="Company"
@@ -127,21 +197,33 @@ export function ContactSection() {
               label="Project description"
               placeholder="Describe your project..."
               showLabel={false}
-              showHelperText={false}
-              multiline
-              rows={6}
-              className="flex-1"
-              value={form.description}
+              required
+              value={form.projectDescription}
               onChange={(event) =>
                 setForm((prev) => ({
                   ...prev,
-                  description: event.target.value,
+                  projectDescription: event.target.value,
                 }))
               }
+              message={projectDescriptionMessage}
+              showHelperText={Boolean(projectDescriptionMessage)}
+              multiline
+              rows={6}
+              className="flex-1"
             />
-            <Button type="submit" variant="secondary" size="xl">
-              Discuss Your Project
+            <Button
+              type="submit"
+              variant="secondary"
+              size="xl"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sending..." : "Discuss Your Project"}
             </Button>
+            {submitError ? (
+              <p className="text-body-sm text-semantic-error" role="alert">
+                {submitError}
+              </p>
+            ) : null}
             {submitted ? (
               <p className="text-body-sm text-semantic-success" role="status">
                 Thanks &mdash; we&apos;ll be in touch within one business day.

@@ -12,6 +12,8 @@ import {
   sectionRevealContainer,
   sectionRevealGroup,
   sectionRevealItem,
+  sectionRevealItemBlur,
+  sectionRevealItemLayout,
 } from "@/lib/motion/section-reveal-variants";
 import { REVEAL_VIEWPORT } from "@/lib/motion/reveal-presets";
 
@@ -54,14 +56,17 @@ interface SectionRevealItemProps {
   children: ReactNode;
   className?: string;
   as?: "div" | "p";
+  layoutOnly?: boolean;
 }
 
 export function SectionRevealItem({
   children,
   className = "",
   as = "div",
+  layoutOnly = false,
 }: SectionRevealItemProps) {
   const motionEnabled = useContext(SectionRevealMotionContext);
+  const variants = layoutOnly ? sectionRevealItemLayout : sectionRevealItem;
 
   if (!motionEnabled) {
     if (as === "p") {
@@ -72,14 +77,28 @@ export function SectionRevealItem({
 
   if (as === "p") {
     return (
-      <motion.p className={className} variants={sectionRevealItem}>
+      <motion.p className={className} variants={variants}>
         {children}
       </motion.p>
     );
   }
 
   return (
-    <motion.div className={className} variants={sectionRevealItem}>
+    <motion.div className={className} variants={variants}>
+      {children}
+    </motion.div>
+  );
+}
+
+export function SectionRevealBlurWrap({ children, className = "" }: SectionRevealProps) {
+  const motionEnabled = useContext(SectionRevealMotionContext);
+
+  if (!motionEnabled) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <motion.div className={className} variants={sectionRevealItemBlur}>
       {children}
     </motion.div>
   );

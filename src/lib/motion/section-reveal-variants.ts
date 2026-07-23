@@ -34,3 +34,25 @@ export const sectionRevealItem = {
     transition: { duration: SECTION_REVEAL_DURATION, ease: SECTION_REVEAL_EASE },
   },
 };
+
+export const sectionRevealItemLayout = {
+  hidden: {
+    opacity: 0,
+    y: SECTION_REVEAL_Y,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: SECTION_REVEAL_DURATION, ease: SECTION_REVEAL_EASE },
+  },
+};
+
+export const sectionRevealItemBlur = {
+  hidden: {
+    filter: `blur(${SECTION_REVEAL_BLUR})`,
+  },
+  visible: {
+    filter: "blur(0px)",
+    transition: { duration: SECTION_REVEAL_DURATION, ease: SECTION_REVEAL_EASE },
+  },
+};

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { Footer } from "@/components/ui/Footer";
 import { NavigationBar } from "@/components/ui/NavigationBar";
+import { PendingSectionScroll } from "@/components/ui/PendingSectionScroll";
 import { SmoothScrollProvider } from "@/components/ui/SmoothScrollProvider";
 
 interface SiteShellProps {
@@ -12,6 +13,7 @@ interface SiteShellProps {
 export function SiteShell({ children }: SiteShellProps) {
   return (
     <SmoothScrollProvider>
+      <PendingSectionScroll />
       <NavigationBar />
       <main className="flex-1 pt-[var(--layout-nav-height)]">{children}</main>
       <Footer />

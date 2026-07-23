@@ -2,9 +2,11 @@ import { Card } from "@/components/ui/Card";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import {
   SectionReveal,
+  SectionRevealBlurWrap,
   SectionRevealGroup,
   SectionRevealItem,
 } from "@/components/ui/SectionReveal";
+import { serviceOfferings } from "@/lib/content/services";
 
 interface ServiceCardData {
   caption: string;
@@ -12,50 +14,7 @@ interface ServiceCardData {
   description: string;
 }
 
-const services: ServiceCardData[] = [
-  {
-    caption: "// 01",
-    title: "3D-IC Design",
-    description:
-      "Advanced 3D integration, chiplet architecture, die-to-die interfaces, and TSV design for next-gen packaging.",
-  },
-  {
-    caption: "// 02",
-    title: "Silicon Photonics",
-    description:
-      "Photonic IC design and integration services spanning waveguides, modulators, and electronic-photonic co-packaging for high-bandwidth optical interconnect.",
-  },
-  {
-    caption: "// 03",
-    title: "RF & Analog",
-    description:
-      "Transceivers, PLLs/synthesizers, and high-speed analog interfaces for 5G, Wi-Fi, automotive, and IoT applications.",
-  },
-  {
-    caption: "// 05",
-    title: "TCAD Simulation",
-    description:
-      "Process and device simulation, PDK calibration, and SPICE model extraction using Sentaurus TCAD and Silvaco Atlas/Victory.",
-  },
-  {
-    caption: "// 04",
-    title: "Quantum Computing",
-    description:
-      "Design and engineering support for quantum hardware \u2014 from cryo-CMOS control circuitry to qubit interconnect and packaging challenges unique to sub-Kelvin operation.",
-  },
-  {
-    caption: "// 06",
-    title: "Physical Design",
-    description:
-      "Full RTL-to-GDSII implementation \u2014 synthesis, floorplan, CTS, routing and signoff on nodes down to 3nm.",
-  },
-  {
-    caption: "// 07",
-    title: "AMS Verification",
-    description:
-      "Our modeling team delivers deep expertise in analog behavioral modeling and AMS (Analog Mixed-Signal) verification for complex analog IPs. We enable early mixed-signal validation, reducing verification cycles while improving design-to-silicon confidence.",
-  },
-];
+const services: ServiceCardData[] = serviceOfferings;
 
 export function ServicesGrid() {
   return (
@@ -93,14 +52,17 @@ export function ServicesGrid() {
           {services.map((service, index) => (
             <SectionRevealItem
               key={service.title}
+              layoutOnly
               className={index < 4 ? "lg:col-span-3" : "lg:col-span-4"}
             >
-              <Card
-                caption={service.caption}
-                title={service.title}
-                subText={service.description}
-                className="!bg-bg-base hover:!bg-bg-surface-raised h-full"
-              />
+              <SectionRevealBlurWrap className="h-full">
+                <Card
+                  caption={service.caption}
+                  title={service.title}
+                  subText={service.description}
+                  className="card-focus-target !bg-bg-base hover:!bg-bg-surface-raised h-full"
+                />
+              </SectionRevealBlurWrap>
             </SectionRevealItem>
           ))}
         </SectionRevealGroup>

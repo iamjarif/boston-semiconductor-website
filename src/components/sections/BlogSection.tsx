@@ -7,47 +7,22 @@ import {
   SectionRevealGroup,
   SectionRevealItem,
 } from "@/components/ui/SectionReveal";
+import { formatBlogDate } from "@/lib/blog-utils";
+import { getBlogPosts } from "@/lib/blog";
 
-interface BlogPostData {
-  title: string;
-  category: string;
-  date: string;
-  imageSrc: string;
-  imageAlt: string;
-  href: string;
-}
+const HOMEPAGE_POST_COUNT = 3;
+const PLACEHOLDER_IMAGE = "/images/blog/placeholder.png";
 
-const blogPosts: BlogPostData[] = [
-  {
-    category: "GaN Power",
-    date: "June 12, 2025",
-    title:
-      "GaN Power Design at the Intersection of TCAD and Real-World Thermal Constraints",
-    imageSrc: "/images/blog/placeholder.png",
-    imageAlt: "Illustration for the GaN power design article",
-    href: "/blog/gan-power-tcad-thermal-constraints",
-  },
-  {
-    category: "3D-IC",
-    date: "May 28, 2025",
-    title:
-      "3D-IC Integration: Chiplet Architectures and the UCIe Die-to-Die Protocol",
-    imageSrc: "/images/blog/placeholder.png",
-    imageAlt: "Illustration for the 3D-IC chiplet integration article",
-    href: "/blog/3d-ic-chiplet-ucie",
-  },
-  {
-    category: "Place & Route",
-    date: "May 14, 2025",
-    title:
-      "From Foundry PDK to DRC-Clean GDSII: Our Place-and-Route Signoff Flow",
-    imageSrc: "/images/blog/placeholder.png",
-    imageAlt: "Illustration for the place-and-route signoff flow article",
-    href: "/blog/pdk-to-drc-clean-gdsii",
-  },
-];
+export async function BlogSection() {
+  const { posts } = await getBlogPosts({
+    page: 1,
+    pageSize: HOMEPAGE_POST_COUNT,
+  });
 
-export function BlogSection() {
+  if (posts.length === 0) {
+    return null;
+  }
+
   return (
     <section className="flex flex-col items-center gap-16 bg-bg-base px-4 py-24 lg:py-[140px]">
       <SectionReveal className="flex w-full max-w-[1316px] flex-col items-center gap-16">
@@ -68,15 +43,16 @@ export function BlogSection() {
         </SectionRevealItem>
 
         <SectionRevealGroup className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
-          {blogPosts.map((post) => (
-            <SectionRevealItem key={post.href}>
+          {posts.map((post) => (
+            <SectionRevealItem key={post.slug}>
               <BlogCard
                 title={post.title}
+                excerpt={post.excerpt}
                 category={post.category}
-                date={post.date}
-                imageSrc={post.imageSrc}
-                imageAlt={post.imageAlt}
-                href={post.href}
+                date={formatBlogDate(post.publishedAt)}
+                imageSrc={post.coverImage?.url ?? PLACEHOLDER_IMAGE}
+                imageAlt={post.coverImage?.alt ?? post.title}
+                href={`/blog/${post.slug}`}
               />
             </SectionRevealItem>
           ))}

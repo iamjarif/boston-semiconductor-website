@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "studio": "node scripts/run-studio.mjs",
+    "studio:deploy": "node scripts/deploy-studio.mjs --yes"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -20,7 +22,8 @@
     "next": "16.2.10",
     "next-sanity": "^13.1.1",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "resend": "^6.18.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -30,6 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "sanity": "^6.4.0",
+    "styled-components": "^6.4.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

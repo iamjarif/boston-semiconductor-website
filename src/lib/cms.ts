@@ -6,11 +6,16 @@ import {
   postSlugsQuery,
   postsCountQuery,
   postsQuery,
+  recentPostsExcludingQuery,
+  relatedPostsQuery,
 } from "@/lib/sanity/queries";
+
+import type { BlogCategory } from "@/types/blog";
 
 interface SanityPostRaw {
   slug: string;
   title: string;
+  category: BlogCategory;
   excerpt: string;
   publishedAt: string;
   coverImage?: {
@@ -60,4 +65,36 @@ export async function fetchAllPostSlugs(): Promise<{ slug: string }[]> {
   if (!client) return [];
 
   return client.fetch<{ slug: string }[]>(postSlugsQuery);
+}
+
+export async function fetchRelatedPosts(
+  slug: string,
+  category: BlogCategory,
+  limit: number,
+): Promise<SanityPostRaw[]> {
+  if (!isSanityConfigured()) return [];
+
+  const client = getSanityClient();
+  if (!client) return [];
+
+  return client.fetch<SanityPostRaw[]>(relatedPostsQuery, {
+    slug,
+    category,
+    limit,
+  });
+}
+
+export async function fetchRecentPostsExcluding(
+  slug: string,
+  limit: number,
+): Promise<SanityPostRaw[]> {
+  if (!isSanityConfigured()) return [];
+
+  const client = getSanityClient();
+  if (!client) return [];
+
+  return client.fetch<SanityPostRaw[]>(recentPostsExcludingQuery, {
+    slug,
+    limit,
+  });
 }

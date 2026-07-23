@@ -4,6 +4,7 @@ export const postsQuery = `
   *[_type == "post" && defined(slug.current)] | order(publishedAt desc) [$start...$end] {
     "slug": slug.current,
     title,
+    category,
     excerpt,
     publishedAt,
     coverImage {
@@ -21,6 +22,7 @@ export const postBySlugQuery = `
   *[_type == "post" && slug.current == $slug][0] {
     "slug": slug.current,
     title,
+    category,
     excerpt,
     publishedAt,
     coverImage {
@@ -34,5 +36,35 @@ export const postBySlugQuery = `
 export const postSlugsQuery = `
   *[_type == "post" && defined(slug.current)] {
     "slug": slug.current
+  }
+`;
+
+export const relatedPostsQuery = `
+  *[_type == "post" && defined(slug.current) && category == $category && slug.current != $slug]
+    | order(publishedAt desc) [0...$limit] {
+    "slug": slug.current,
+    title,
+    category,
+    excerpt,
+    publishedAt,
+    coverImage {
+      asset->{ _id, url },
+      alt
+    }
+  }
+`;
+
+export const recentPostsExcludingQuery = `
+  *[_type == "post" && defined(slug.current) && slug.current != $slug]
+    | order(publishedAt desc) [0...$limit] {
+    "slug": slug.current,
+    title,
+    category,
+    excerpt,
+    publishedAt,
+    coverImage {
+      asset->{ _id, url },
+      alt
+    }
   }
 `;

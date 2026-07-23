@@ -37,10 +37,12 @@ npm install
 ### 2. Configure environment
 
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env.local
 ```
 
 Fill in your Sanity project ID and dataset. Create a project at [sanity.io](https://www.sanity.io/) if you don't have one.
+
+See [Newsletter & blog notifications](#newsletter--blog-notifications) below for Resend and webhook setup.
 
 ### 3. Run the development server
 
@@ -53,10 +55,10 @@ Open [http://localhost:3000](http://localhost:3000).
 ### 4. Sanity Studio (blog admin)
 
 ```bash
-npx sanity dev --cwd sanity
+npm run studio
 ```
 
-Admins manage blog posts through Sanity Studio — no custom dashboard needed.
+Opens at [http://localhost:3333](http://localhost:3333). Admins manage blog posts through Sanity Studio — no custom dashboard needed.
 
 ## Content Editing
 
@@ -75,6 +77,43 @@ New sections (e.g. `/careers`) follow the same pattern:
 
 No restructuring of existing code required.
 
+## Newsletter & blog notifications
+
+Footer newsletter signups are stored in a **Resend Segment** and new blog posts trigger a **broadcast email** via a Sanity webhook.
+
+### 1. Resend
+
+1. Create a [Resend](https://resend.com/) Segment (e.g. “Blog Newsletter”) in the dashboard.
+2. Copy the **Segment ID** into `.env.local` as `RESEND_SEGMENT_ID`.
+3. Ensure `RESEND_API_KEY` is set. (`CONTACT_FORM_TO_EMAIL` is only used by the contact form — newsletter signups do not email admins.)
+
+### 2. Sanity write token
+
+Create a token with **Editor** access at [sanity.io/manage](https://www.sanity.io/manage) → API → Tokens.
+
+Add to `.env.local`:
+
+```env
+SANITY_API_WRITE_TOKEN=your-token
+```
+
+This records `notificationSentAt` on each post so subscribers are not emailed twice when you edit a post.
+
+### 3. Sanity webhook
+
+In [sanity.io/manage](https://www.sanity.io/manage) → your project → **API** → **Webhooks** → **Create webhook**:
+
+| Setting | Value |
+|---------|--------|
+| **URL** | `https://www.bostonsemiconductor.com/api/webhooks/sanity` |
+| **Dataset** | `production` (or your dataset) |
+| **Trigger on** | Create, Update |
+| **Filter** | `_type == "post" && !(_id in path("drafts.**"))` |
+| **Projection** | `{ "_type": _type, "_id": _id, "title": title, "slug": slug.current, "excerpt": excerpt, "notificationSentAt": notificationSentAt }` |
+| **Secret** | Generate a secret → set as `SANITY_WEBHOOK_SECRET` in `.env.local` |
+
+When you **publish** a new blog post (first time only), all segment subscribers receive an email with the title, excerpt, and link to the article. Edits to already-notified posts are skipped.
+
 ## Scripts
 
 | Command | Description |
@@ -83,3 +122,4 @@ No restructuring of existing code required.
 | `npm run build` | Production build |
 | `npm run start` | Start production server |
 | `npm run lint` | Run ESLint |
+| `npm run studio` | Start Sanity Studio for blog editing |

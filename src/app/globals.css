@@ -107,8 +107,18 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+::selection {
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+}
+
+::-moz-selection {
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+}
+
 /* Blur non-hovered cards when one card in the grid is hovered */
-.card-focus-grid > * {
+.card-focus-grid .card-focus-target {
   filter: blur(0);
   opacity: 1;
   transition:
@@ -120,26 +130,26 @@ body {
 }
 
 @media (hover: hover) {
-  .card-focus-grid:has(> *:hover) > *:not(:hover) {
+  .card-focus-grid:has(.card-focus-target:hover) .card-focus-target:not(:hover) {
     filter: blur(4px);
     opacity: 0.55;
   }
 
-  .card-focus-grid:has(> *:hover) > *:hover {
+  .card-focus-grid:has(.card-focus-target:hover) .card-focus-target:hover {
     position: relative;
     z-index: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card-focus-grid > * {
+  .card-focus-grid .card-focus-target {
     transition:
       color 300ms ease,
       background-color 300ms ease,
       border-color 300ms ease;
   }
 
-  .card-focus-grid:has(> *:hover) > *:not(:hover) {
+  .card-focus-grid:has(.card-focus-target:hover) .card-focus-target:not(:hover) {
     filter: blur(0);
     opacity: 1;
   }

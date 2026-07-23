@@ -1,45 +1,51 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { useLenis } from "@/components/ui/SmoothScrollProvider";
 import { siteConfig } from "@/lib/config/site";
+import { useScrollToSection } from "@/lib/navigation/use-scroll-to-section";
+import {
+  isNavLinkActive,
+  useNavActiveState,
+} from "@/lib/navigation/use-nav-active-state";
 import { NAV_INTRO_DURATION, REVEAL_EASE } from "@/lib/motion/reveal-presets";
 
 export interface NavigationBarLink {
   label: string;
-  href: string;
+  href?: string;
+  sectionId?: string;
 }
 
 export interface NavigationBarProps {
   logo?: ReactNode;
-  logoHref?: string;
+  logoSectionId?: string;
   links?: NavigationBarLink[];
   ctaLabel?: string;
-  ctaHref?: string;
+  ctaSectionId?: string;
   className?: string;
 }
 
 const defaultLinks: NavigationBarLink[] = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Packages", href: "#packages" },
+  { label: "About", sectionId: "about" },
+  { label: "Services", sectionId: "services" },
   { label: "Blogs", href: "/blog" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", sectionId: "contact" },
 ];
 
 export function NavigationBar({
   logo,
-  logoHref = "/",
+  logoSectionId = "hero",
   links = defaultLinks,
   ctaLabel = "Request Quote",
-  ctaHref = "#contact",
+  ctaSectionId = "contact",
   className = "",
 }: NavigationBarProps) {
+  const scrollToSection = useScrollToSection();
+  const activeKey = useNavActiveState();
   // No mobile frame exists in the Figma design, so the collapse breakpoint
   // and drawer treatment below `md` are a judgment call.
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -99,8 +105,11 @@ export function NavigationBar({
       });
     };
 
+    const initialY = lenis ? lenis.scroll : window.scrollY;
+    setIsScrolled(initialY > TOP_THRESHOLD);
+    lastScrollY.current = initialY;
+
     if (lenis) {
-      lastScrollY.current = lenis.scroll;
       const onLenisScroll = (instance: typeof lenis) => {
         handleScroll(instance.scroll);
       };
@@ -112,7 +121,6 @@ export function NavigationBar({
       };
     }
 
-    lastScrollY.current = window.scrollY;
     const onScroll = () => handleScroll(window.scrollY);
     window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -144,17 +152,25 @@ export function NavigationBar({
       initial={{ y: reduceMotion ? 0 : "-100%" }}
       animate={{ y: isVisuallyHidden ? "-100%" : "0%" }}
       transition={{ duration: NAV_INTRO_DURATION, ease: REVEAL_EASE }}
-      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center px-4 py-4 transition-[background-color,backdrop-filter,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0 ${
+      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center px-4 py-4 transition-[background-color,backdrop-filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0 ${
         isScrolled
-          ? "border-b border-border-default bg-bg-base/80 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
+          ? "bg-bg-base/80 backdrop-blur-md"
+          : "bg-transparent"
       } ${className}`}
     >
       <div className="flex w-full max-w-[1800px] items-center">
         <div className="flex w-[200px] shrink-0 items-center">
-          <Link href={logoHref} className="inline-flex items-center">
+          <button
+            type="button"
+            onClick={() => {
+              setIsMenuOpen(false);
+              scrollToSection(logoSectionId);
+            }}
+            className="inline-flex cursor-pointer items-center"
+            aria-label={`${siteConfig.name} home`}
+          >
             {logoContent}
-          </Link>
+          </button>
         </div>
 
         <nav
@@ -163,8 +179,10 @@ export function NavigationBar({
         >
           {links.map((link) => (
             <Button
-              key={link.href}
+              key={link.label}
               href={link.href}
+              sectionId={link.sectionId}
+              active={isNavLinkActive(link, activeKey)}
               variant="ghost"
               size="l"
               className="px-3 py-2"
@@ -175,7 +193,7 @@ export function NavigationBar({
         </nav>
 
         <div className="hidden w-[200px] shrink-0 items-center justify-end md:flex">
-          <Button href={ctaHref} variant="outline" size="m">
+          <Button sectionId={ctaSectionId} variant="outline" size="m">
             {ctaLabel}
           </Button>
         </div>
@@ -222,8 +240,10 @@ export function NavigationBar({
           <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
             {links.map((link) => (
               <Button
-                key={link.href}
+                key={link.label}
                 href={link.href}
+                sectionId={link.sectionId}
+                active={isNavLinkActive(link, activeKey)}
                 variant="ghost"
                 size="l"
                 className="w-full justify-start px-3 py-3"
@@ -234,7 +254,13 @@ export function NavigationBar({
             ))}
           </nav>
           <div className="mt-4">
-            <Button href={ctaHref} variant="outline" size="m" className="w-full">
+            <Button
+              sectionId={ctaSectionId}
+              variant="outline"
+              size="m"
+              className="w-full"
+              onClick={() => setIsMenuOpen(false)}
+            >
               {ctaLabel}
             </Button>
           </div>

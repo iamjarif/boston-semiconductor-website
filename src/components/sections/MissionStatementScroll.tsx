@@ -97,6 +97,7 @@ export function MissionStatementScroll() {
   return (
     <section
       ref={sectionRef}
+      id="about"
       aria-label="Mission"
       className="relative flex min-h-svh items-center justify-center overflow-hidden bg-bg-base px-4"
     >
