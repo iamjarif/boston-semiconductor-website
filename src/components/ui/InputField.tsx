@@ -55,9 +55,9 @@ const sizeStyles: Record<
     icon: "size-6",
   },
   md: {
-    container: "px-4 py-3",
+    container: "px-3 py-2.5 lg:px-4 lg:py-3",
     input: "text-body",
-    icon: "size-8",
+    icon: "size-6 lg:size-8",
   },
   lg: {
     container: "px-4 py-3.5",
@@ -219,7 +219,7 @@ export function InputField({
         ? "border-2 border-semantic-warning"
         : resolvedMessage?.type === "success"
           ? "border-2 border-semantic-success"
-          : "border border-border-default hover:border-border-strong focus-within:border-2 focus-within:border-brand-primary active:border-2 active:border-brand-primary";
+          : "border border-border-default pointer-fine:hover:border-border-strong focus-within:border-2 focus-within:border-brand-primary active:border-2 active:border-brand-primary";
 
   const messageColorClass =
     resolvedMessage?.type === "error"
@@ -355,7 +355,7 @@ export function InputField({
           <button
             type="button"
             onClick={handleClear}
-            className="inline-flex shrink-0 items-center text-text-secondary transition-colors hover:text-text-primary"
+            className="inline-flex shrink-0 items-center text-text-secondary transition-colors pointer-fine:hover:text-text-primary"
             aria-label="Clear input"
           >
             <ClearIcon />
@@ -366,7 +366,7 @@ export function InputField({
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="inline-flex shrink-0 items-center text-text-secondary transition-colors hover:text-text-primary"
+            className="inline-flex shrink-0 items-center text-text-secondary transition-colors pointer-fine:hover:text-text-primary"
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             <EyeIcon open={showPassword} />

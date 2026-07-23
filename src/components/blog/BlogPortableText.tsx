@@ -4,7 +4,7 @@ import type { PortableTextBlock } from "@portabletext/types";
 const portableTextComponents: PortableTextComponents = {
   block: {
     h2: ({ children }) => (
-      <h2 className="text-h4 mt-10 mb-4 text-text-primary first:mt-0">{children}</h2>
+      <h2 className="text-h5 mt-10 mb-4 text-text-primary first:mt-0 lg:text-h4">{children}</h2>
     ),
     h3: ({ children }) => (
       <h3 className="text-h5 mt-8 mb-3 text-text-primary first:mt-0">{children}</h3>
@@ -45,7 +45,7 @@ const portableTextComponents: PortableTextComponents = {
       return (
         <a
           href={href}
-          className="text-brand-primary underline-offset-2 transition-colors hover:underline"
+          className="text-brand-primary underline-offset-2 transition-colors pointer-fine:hover:underline"
           target={href.startsWith("http") ? "_blank" : undefined}
           rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
         >

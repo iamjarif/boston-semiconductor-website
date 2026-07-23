@@ -30,12 +30,15 @@ export function ServicesGrid() {
           src="/images/glows/glow-services.svg"
           size={477}
           rotate={-90}
-          className="left-1/2 top-[-50px] -translate-x-1/2"
+          className="left-1/2 top-[-50px] -translate-x-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
       <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-24">
-        <SectionRevealItem className="flex flex-col items-center gap-7 text-center">
+        <SectionRevealItem
+          blurFromLg
+          className="flex flex-col items-center gap-7 text-center"
+        >
           <div className="flex flex-col items-center gap-3">
             <p className="text-mono-lg text-brand-primary">CORE SERVICES</p>
             <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
@@ -43,7 +46,8 @@ export function ServicesGrid() {
             </h2>
           </div>
           <p className="max-w-[750px] text-body text-text-secondary">
-            Full-stack semiconductor design capability, mapped the way <br></br>{" "}
+            Full-stack semiconductor design capability, mapped the way{" "}
+            <br className="hidden sm:inline" />
             our engineers actually think about a chip.
           </p>
         </SectionRevealItem>
@@ -55,12 +59,12 @@ export function ServicesGrid() {
               layoutOnly
               className={index < 4 ? "lg:col-span-3" : "lg:col-span-4"}
             >
-              <SectionRevealBlurWrap className="h-full">
+              <SectionRevealBlurWrap blurFromLg className="h-full">
                 <Card
                   caption={service.caption}
                   title={service.title}
                   subText={service.description}
-                  className="card-focus-target !bg-bg-base hover:!bg-bg-surface-raised h-full"
+                  className="card-focus-target !bg-bg-base pointer-fine:hover:!bg-bg-surface-raised h-full"
                 />
               </SectionRevealBlurWrap>
             </SectionRevealItem>

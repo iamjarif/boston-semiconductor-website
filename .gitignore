@@ -50,6 +50,7 @@ yarn-error.log*
 # sanity studio build output
 /sanity/dist
 /sanity/.sanity
+/sanity/y
 
 # typescript
 *.tsbuildinfo

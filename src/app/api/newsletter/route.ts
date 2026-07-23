@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-import { EMAIL_REGEX } from "@/lib/email/resend-config";
-
-interface NewsletterPayload {
-  email?: string;
-}
+import {
+  enforceFormRateLimit,
+  honeypotAcceptedResponse,
+  isHoneypotTripped,
+} from "@/lib/security/api-route";
+import { methodNotAllowedResponse } from "@/lib/security/request";
+import { newsletterFormSchema } from "@/lib/security/validation";
 
 function isExistingContactError(message: string | undefined): boolean {
   if (!message) return false;
@@ -13,20 +15,27 @@ function isExistingContactError(message: string | undefined): boolean {
   return normalized.includes("already") || normalized.includes("exist");
 }
 
-export async function POST(request: Request) {
-  try {
-    const body = (await request.json()) as NewsletterPayload;
-    const email = body.email?.trim() ?? "";
+export async function GET() {
+  return methodNotAllowedResponse();
+}
 
-    if (!email) {
-      return NextResponse.json({ error: "Email is required." }, { status: 400 });
+export async function POST(request: Request) {
+  const rateLimitResponse = enforceFormRateLimit(request, "newsletter");
+  if (rateLimitResponse) return rateLimitResponse;
+
+  try {
+    const body: unknown = await request.json();
+    const parsed = newsletterFormSchema.safeParse(body);
+
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0]?.message ?? "Invalid request.";
+      return NextResponse.json({ error: firstIssue }, { status: 400 });
     }
 
-    if (!EMAIL_REGEX.test(email)) {
-      return NextResponse.json(
-        { error: "Please enter a valid email address." },
-        { status: 400 },
-      );
+    const { email, website } = parsed.data;
+
+    if (isHoneypotTripped(website)) {
+      return honeypotAcceptedResponse();
     }
 
     const apiKey = process.env.RESEND_API_KEY;

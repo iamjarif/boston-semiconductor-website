@@ -24,7 +24,7 @@ export function ModelCard({
 }: ModelCardProps) {
   return (
     <Component
-      className={`relative flex w-full flex-col gap-8 overflow-hidden rounded-3xl bg-bg-base p-12 ${highlighted ? "border-[6px] border-brand-primary" : "border border-transparent"} ${className}`}
+      className={`relative flex w-full flex-col gap-8 overflow-hidden rounded-3xl bg-bg-base p-6 sm:p-8 lg:p-12 ${highlighted ? "border-[6px] border-brand-primary" : "border border-transparent"} ${className}`}
     >
       <div className="relative flex flex-col gap-4">
         <p className="text-mono text-brand-primary">{caption}</p>
@@ -35,12 +35,12 @@ export function ModelCard({
         {rows.map((row) => (
           <div
             key={`${row.label}-${row.description}`}
-            className="flex items-center gap-4 border-t border-border-default py-4 first:pt-4"
+            className="flex flex-col gap-1 border-t border-border-default py-4 first:pt-4 sm:flex-row sm:items-center sm:gap-4"
           >
-            <p className="shrink-0 whitespace-nowrap text-body text-text-primary">
+            <p className="shrink-0 min-w-[5rem] text-body text-text-primary">
               {row.label}
             </p>
-            <p className="min-w-0 flex-1 text-right text-body-sm text-text-secondary">
+            <p className="min-w-0 flex-1 text-body-sm text-text-secondary sm:text-right">
               {row.description}
             </p>
           </div>

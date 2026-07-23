@@ -8,6 +8,7 @@ import {
   getSiteUrl,
   RESEND_FROM_ADDRESS,
 } from "@/lib/email/resend-config";
+import { methodNotAllowedResponse } from "@/lib/security/request";
 import { getSanityWriteClient } from "@/lib/sanity/write-client";
 
 interface SanityPostDocument {
@@ -39,13 +40,18 @@ function extractPostDocument(
   return doc;
 }
 
+export async function GET() {
+  return methodNotAllowedResponse();
+}
+
 export async function POST(request: NextRequest) {
   try {
     const secret = process.env.SANITY_WEBHOOK_SECRET;
     if (!secret) {
+      console.error("SANITY_WEBHOOK_SECRET is not configured.");
       return NextResponse.json(
-        { error: "SANITY_WEBHOOK_SECRET is not configured." },
-        { status: 500 },
+        { error: "Service unavailable." },
+        { status: 503 },
       );
     }
 

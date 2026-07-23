@@ -52,7 +52,7 @@ export function EngagementModels() {
           src="/images/glows/glow-engagement.svg"
           size={477}
           rotate={-90}
-          className="left-1/2 top-[-80px] -translate-x-1/2"
+          className="left-1/2 top-[-80px] -translate-x-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
@@ -72,7 +72,7 @@ export function EngagementModels() {
           </p>
         </SectionRevealItem>
 
-        <SectionRevealGroup className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+        <SectionRevealGroup className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
           {engagementModels.map((model) => (
             <SectionRevealItem key={model.title}>
               <ModelCard

@@ -9,6 +9,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function FooterNewsletter() {
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,7 +37,7 @@ export function FooterNewsletter() {
       const response = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({ email: trimmed, website }),
       });
 
       if (!response.ok) {
@@ -78,7 +79,17 @@ export function FooterNewsletter() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
+          className="pointer-events-none absolute -left-[9999px] h-0 w-0 opacity-0"
+        />
+        <div className="flex flex-row items-center gap-3">
           <InputField
             type="email"
             name="email"
@@ -99,8 +110,8 @@ export function FooterNewsletter() {
           <Button
             type="submit"
             variant="primary"
-            size="l"
-            className="shrink-0 self-stretch"
+            size="m"
+            className="w-auto shrink-0"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Subscribing…" : "Subscribe"}

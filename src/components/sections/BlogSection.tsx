@@ -24,7 +24,7 @@ export async function BlogSection() {
   }
 
   return (
-    <section className="flex flex-col items-center gap-16 bg-bg-base px-4 py-24 lg:py-[140px]">
+    <section className="flex flex-col items-center gap-16 overflow-hidden bg-bg-base px-4 py-24 lg:py-[140px]">
       <SectionReveal className="flex w-full max-w-[1316px] flex-col items-center gap-16">
         <SectionRevealItem className="flex w-full flex-col items-center gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-1 flex-col items-center gap-3 text-center sm:items-start sm:text-left">
@@ -42,7 +42,7 @@ export async function BlogSection() {
           </Button>
         </SectionRevealItem>
 
-        <SectionRevealGroup className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
+        <SectionRevealGroup className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <SectionRevealItem key={post.slug}>
               <BlogCard

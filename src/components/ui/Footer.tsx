@@ -30,7 +30,7 @@ interface FooterColumnProps {
 
 function FooterColumn({ heading, children }: FooterColumnProps) {
   return (
-    <div className="flex min-w-[140px] flex-1 flex-col gap-4">
+    <div className="flex flex-1 flex-col gap-4">
       <h3 className="text-mono text-text-secondary">{heading}</h3>
       <ul className="flex flex-col gap-3">{children}</ul>
     </div>
@@ -51,13 +51,13 @@ export function Footer() {
         <GlowOrb
           src="/images/glows/glow-contact-1.svg"
           size={524}
-          className="left-[-180px] bottom-[-120px]"
+          className="left-[-180px] bottom-[-120px] scale-50 sm:scale-75 lg:scale-100"
         />
         <GlowOrb
           src="/images/glows/glow-mission-2.svg"
           size={299}
           rotate={45}
-          className="right-[-80px] top-[-60px]"
+          className="right-[-80px] top-[-60px] scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
@@ -132,7 +132,10 @@ export function Footer() {
 
           <FooterColumn heading="Contact">
             <li>
-              <FooterLink href={`mailto:${siteConfig.contact.email}`}>
+              <FooterLink
+                href={`mailto:${siteConfig.contact.email}`}
+                className="break-all"
+              >
                 {siteConfig.contact.email}
               </FooterLink>
             </li>
@@ -158,7 +161,7 @@ export function Footer() {
                 href={linkedInUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-border-default px-3 py-2 text-body-sm text-text-primary transition-colors hover:border-border-strong hover:text-brand-primary"
+                className="inline-flex items-center gap-2 rounded-lg border border-border-default px-3 py-2 text-body-sm text-text-primary transition-colors pointer-fine:hover:border-border-strong pointer-fine:hover:text-brand-primary"
                 aria-label="Boston Semiconductor on LinkedIn"
               >
                 <LinkedInIcon />

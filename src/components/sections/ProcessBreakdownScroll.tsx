@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { SectionReveal, SectionRevealItem } from "@/components/ui/SectionReveal";
@@ -117,7 +117,7 @@ function ProcessBlockCardContent({ block }: { block: ProcessBlockData }) {
           ))}
         </ul>
       </div>
-      <div className="relative h-[300px] w-full overflow-hidden rounded-3xl lg:h-full lg:w-[42%]">
+      <div className="relative aspect-[4/3] w-full max-h-[300px] overflow-hidden rounded-3xl lg:aspect-auto lg:h-full lg:max-h-none lg:w-[42%]">
         <div className="card-image-inner absolute inset-0 will-change-transform">
           <Image
             src={block.image.src}
@@ -135,7 +135,14 @@ function ProcessBlockCardContent({ block }: { block: ProcessBlockData }) {
 function ProcessMobileCards() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, REVEAL_VIEWPORT);
+  const [hasRevealed, setHasRevealed] = useState(false);
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (isInView) {
+      setHasRevealed(true);
+    }
+  }, [isInView]);
 
   return (
     <div ref={ref} className="flex flex-col gap-16">
@@ -150,7 +157,7 @@ function ProcessMobileCards() {
               className={cardContentClassName(block)}
               variants={sectionRevealItem}
               initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
+              animate={hasRevealed ? "visible" : "hidden"}
               transition={{ delay: index * SECTION_REVEAL_CHILD_STAGGER }}
             >
               <ProcessBlockCardContent block={block} />
@@ -324,7 +331,7 @@ export function ProcessBreakdownScroll() {
           src="/images/glows/glow-process.svg"
           size={477}
           rotate={-90}
-          className="left-1/2 top-[-100px] -translate-x-1/2"
+          className="left-1/2 top-[-100px] -translate-x-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
@@ -343,7 +350,9 @@ export function ProcessBreakdownScroll() {
                   UNDER THE FLOORPLAN
                 </p>
                 <h2 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-                  How each block <br></br> actually gets built.
+                  How each block{" "}
+                  <br className="hidden sm:inline" />
+                  actually gets built.
                 </h2>
               </div>
               <p className="max-w-[750px] text-body text-text-secondary">

@@ -76,12 +76,12 @@ export function WhyUsSection() {
           src="/images/glows/glow-whyus-1.svg"
           size={366}
           rotate={-165}
-          className="left-[-150px] top-[60%]"
+          className="left-[-150px] top-[60%] scale-50 sm:scale-75 lg:scale-100"
         />
         <GlowOrb
           src="/images/glows/glow-whyus-2.svg"
           size={524}
-          className="right-[-200px] top-[45%]"
+          className="right-[-200px] top-[45%] scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 

@@ -27,27 +27,27 @@ export function BlogCard({
 }: BlogCardProps) {
   const card = (
     <article
-      className={`group relative flex h-96 w-full flex-col overflow-hidden rounded-3xl border border-transparent bg-bg-surface transition-[transform,colors] duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:bg-bg-surface-raised ${className}`}
+      className={`group relative flex w-full flex-col overflow-hidden rounded-3xl border border-transparent bg-bg-surface transition-[transform,colors] duration-300 pointer-fine:hover:-translate-y-0.5 pointer-fine:hover:border-border-strong pointer-fine:hover:bg-bg-surface-raised ${className}`}
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity pointer-fine:group-hover:opacity-100"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/10 via-brand-primary/5 to-transparent" />
       </div>
 
-      <div className="relative h-[200px] w-full shrink-0 overflow-hidden">
+      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden sm:aspect-[16/9] lg:h-[200px] lg:aspect-auto">
         <Image
           src={imageSrc}
           alt={imageAlt || title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 pointer-fine:group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 424px"
         />
       </div>
 
-      <div className="relative flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-6 pt-5">
-        <div className="flex shrink-0 items-center gap-2 whitespace-nowrap text-mono-sm">
+      <div className="relative flex flex-1 flex-col gap-2 p-6 pt-5">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-mono-sm">
           <span className="text-brand-primary">{category}</span>
           <span className="text-text-disabled">·</span>
           <span className="text-body-xs text-text-disabled">{date}</span>

@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+import {
+  enforceFormRateLimit,
+  honeypotAcceptedResponse,
+  isHoneypotTripped,
+} from "@/lib/security/api-route";
+import { methodNotAllowedResponse } from "@/lib/security/request";
+import {
+  contactFormSchema,
+  sanitizeEmailHeader,
+} from "@/lib/security/validation";
 import { buildContactInquiryEmailHtml } from "@/lib/email/contact-inquiry-template";
 
-interface ContactPayload {
-  name?: string;
-  email?: string;
-  company?: string;
-  projectDescription?: string;
-}
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FROM_ADDRESS =
   "Boston Semiconductor Website <noreply@mail.bostonsemiconductor.com>";
 
@@ -22,34 +24,27 @@ function parseRecipients(raw: string | undefined): string[] {
     .filter(Boolean);
 }
 
+export async function GET() {
+  return methodNotAllowedResponse();
+}
+
 export async function POST(request: Request) {
+  const rateLimitResponse = enforceFormRateLimit(request, "contact");
+  if (rateLimitResponse) return rateLimitResponse;
+
   try {
-    const body = (await request.json()) as ContactPayload;
-    const name = body.name?.trim() ?? "";
-    const email = body.email?.trim() ?? "";
-    const company = body.company?.trim() ?? "";
-    const projectDescription = body.projectDescription?.trim() ?? "";
+    const body: unknown = await request.json();
+    const parsed = contactFormSchema.safeParse(body);
 
-    if (!name) {
-      return NextResponse.json({ error: "Name is required." }, { status: 400 });
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0]?.message ?? "Invalid request.";
+      return NextResponse.json({ error: firstIssue }, { status: 400 });
     }
 
-    if (!email) {
-      return NextResponse.json({ error: "Email is required." }, { status: 400 });
-    }
+    const { name, email, company, projectDescription, website } = parsed.data;
 
-    if (!EMAIL_REGEX.test(email)) {
-      return NextResponse.json(
-        { error: "Please enter a valid email address." },
-        { status: 400 },
-      );
-    }
-
-    if (!projectDescription) {
-      return NextResponse.json(
-        { error: "Project description is required." },
-        { status: 400 },
-      );
+    if (isHoneypotTripped(website)) {
+      return honeypotAcceptedResponse();
     }
 
     const apiKey = process.env.RESEND_API_KEY;
@@ -62,9 +57,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const subject = company
-      ? `New Project Inquiry: ${company} — ${name}`
-      : `New Project Inquiry from ${name}`;
+    const safeName = sanitizeEmailHeader(name);
+    const safeCompany = company ? sanitizeEmailHeader(company) : undefined;
+
+    const subject = safeCompany
+      ? `New Project Inquiry: ${safeCompany} — ${safeName}`
+      : `New Project Inquiry from ${safeName}`;
 
     const submittedAt = new Date();
     const html = buildContactInquiryEmailHtml({

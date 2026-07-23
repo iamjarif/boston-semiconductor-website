@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { useScrollToSection } from "@/lib/navigation/use-scroll-to-section";
 
 const linkClassName =
-  "text-left text-body text-text-primary transition-colors hover:text-brand-primary";
+  "text-left text-body text-text-primary transition-colors pointer-fine:hover:text-brand-primary";
 
 interface FooterLinkProps {
   children: ReactNode;

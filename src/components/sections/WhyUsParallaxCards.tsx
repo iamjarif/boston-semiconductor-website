@@ -37,72 +37,35 @@ function WhyUsHeadline() {
         WHY BOSTON SEMICONDUCTOR
       </p>
       <h2 className="max-w-[1316px] bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent">
-        Built for chip teams that <br /> can&apos;t afford a leak.
+        Built for chip teams that{" "}
+        <br className="hidden sm:inline" />
+        can&apos;t afford a leak.
       </h2>
     </div>
   );
 }
 
-function StaticCardRow({ cards }: { cards: WhyUsCardData[] }) {
-  return (
-    <>
-      {cards.map((card) => (
-        <Card
-          key={card.title}
-          caption={card.caption}
-          title={card.title}
-          subText={card.subText}
-          hoverEffect={false}
-          className={`lg:h-[200px] ${cardAlignClass(card.align)}`}
-        />
-      ))}
-    </>
-  );
-}
-
-function ParallaxCard({
-  card,
-  depth,
-}: {
-  card: WhyUsCardData;
-  depth: number;
-}) {
-  return (
-    <FloatingElement
-      depth={depth}
-      className={`lg:h-[200px] ${cardAlignClass(card.align)}`}
-    >
-      <Card
-        caption={card.caption}
-        title={card.title}
-        subText={card.subText}
-        hoverEffect={false}
-        className="h-full w-full"
-      />
-    </FloatingElement>
-  );
-}
-
 function WhyUsRevealLayout({
-  renderFirstRow,
-  renderSecondRow,
+  allCards,
+  renderCard,
 }: {
-  renderFirstRow: () => ReactNode;
-  renderSecondRow: () => ReactNode;
+  allCards: WhyUsCardData[];
+  renderCard: (card: WhyUsCardData, index: number) => ReactNode;
 }) {
   return (
-    <SectionReveal className="flex w-full flex-col items-center gap-16">
-      <SectionRevealItem className="order-2 w-full">
+    <SectionReveal className="flex w-full flex-col items-center gap-6 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:gap-y-16">
+      <SectionRevealItem className="order-1 w-full pb-4 lg:order-2 lg:col-span-3 lg:pb-0">
         <WhyUsHeadline />
       </SectionRevealItem>
 
-      <SectionRevealItem className="order-1 grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:h-[300px]">
-        {renderFirstRow()}
-      </SectionRevealItem>
-
-      <SectionRevealItem className="order-3 grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:h-[300px]">
-        {renderSecondRow()}
-      </SectionRevealItem>
+      {allCards.map((card, index) => (
+        <SectionRevealItem
+          key={card.title}
+          className={`order-2 w-full ${index < 3 ? "lg:order-1" : "lg:order-3"}`}
+        >
+          {renderCard(card, index)}
+        </SectionRevealItem>
+      ))}
     </SectionReveal>
   );
 }
@@ -115,12 +78,40 @@ export function WhyUsParallaxCards({
   const canHover = usePrefersHover();
   const reduceMotion = useReducedMotion();
   const parallaxEnabled = canHover && !reduceMotion;
+  const allCards = [...firstRow, ...secondRow];
+
+  const renderStaticCard = (card: WhyUsCardData) => (
+    <Card
+      key={card.title}
+      caption={card.caption}
+      title={card.title}
+      subText={card.subText}
+      hoverEffect={false}
+      className={`lg:min-h-[200px] ${cardAlignClass(card.align)}`}
+    />
+  );
+
+  const renderParallaxCard = (card: WhyUsCardData, index: number) => (
+    <FloatingElement
+      key={card.title}
+      depth={CARD_DEPTHS[index]}
+      className={`lg:min-h-[200px] ${cardAlignClass(card.align)}`}
+    >
+      <Card
+        caption={card.caption}
+        title={card.title}
+        subText={card.subText}
+        hoverEffect={false}
+        className="h-full w-full"
+      />
+    </FloatingElement>
+  );
 
   if (!parallaxEnabled) {
     return (
       <WhyUsRevealLayout
-        renderFirstRow={() => <StaticCardRow cards={firstRow} />}
-        renderSecondRow={() => <StaticCardRow cards={secondRow} />}
+        allCards={allCards}
+        renderCard={(card) => renderStaticCard(card)}
       />
     );
   }
@@ -133,24 +124,8 @@ export function WhyUsParallaxCards({
       easingFactor={FLOAT_EASING}
     >
       <WhyUsRevealLayout
-        renderFirstRow={() =>
-          firstRow.map((card, index) => (
-            <ParallaxCard
-              key={card.title}
-              card={card}
-              depth={CARD_DEPTHS[index]}
-            />
-          ))
-        }
-        renderSecondRow={() =>
-          secondRow.map((card, index) => (
-            <ParallaxCard
-              key={card.title}
-              card={card}
-              depth={CARD_DEPTHS[index + 3]}
-            />
-          ))
-        }
+        allCards={allCards}
+        renderCard={(card, index) => renderParallaxCard(card, index)}
       />
     </Floating>
   );

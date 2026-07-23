@@ -51,7 +51,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const relatedPosts = await getRelatedPosts(slug, post.category, 3);
 
   return (
-    <article className="relative -mt-[var(--layout-nav-height)] overflow-hidden bg-bg-base px-4 pb-24 pt-[calc(var(--layout-nav-height)+2rem)] lg:pb-[140px] lg:pt-[calc(var(--layout-nav-height)+3rem)]">
+    <article className="relative -mt-[var(--layout-nav-height)] overflow-hidden bg-bg-base px-4 pb-16 pt-[calc(var(--layout-nav-height)+2rem)] lg:pb-[140px] lg:pt-[calc(var(--layout-nav-height)+3rem)]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
@@ -59,7 +59,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <GlowOrb
           src="/images/glows/glow-hero.svg"
           size={600}
-          className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+          className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
@@ -86,7 +86,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl">
             <Image
               src={post.coverImage.url}
-              alt={post.coverImage.alt}
+              alt={post.coverImage.alt ?? post.title}
               fill
               className="object-cover"
               priority
@@ -99,7 +99,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </div>
 
       {relatedPosts.length > 0 ? (
-        <div className="relative z-10 mx-auto mt-20 w-full max-w-[1316px]">
+        <div className="relative z-10 mx-auto mt-12 w-full max-w-[1316px] lg:mt-20">
           <RelatedPostsSection posts={relatedPosts} />
         </div>
       ) : null}

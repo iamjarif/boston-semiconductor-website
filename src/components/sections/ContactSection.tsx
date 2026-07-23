@@ -12,6 +12,7 @@ interface ContactFormState {
   email: string;
   company: string;
   projectDescription: string;
+  website: string;
 }
 
 interface ContactFormErrors {
@@ -27,6 +28,7 @@ const initialFormState: ContactFormState = {
   email: "",
   company: "",
   projectDescription: "",
+  website: "",
 };
 
 export function ContactSection() {
@@ -79,6 +81,7 @@ export function ContactSection() {
           email: form.email.trim(),
           company: form.company.trim(),
           projectDescription: form.projectDescription.trim(),
+          website: form.website,
         }),
       });
 
@@ -126,17 +129,17 @@ export function ContactSection() {
         <GlowOrb
           src="/images/glows/glow-contact-1.svg"
           size={524}
-          className="left-[-150px] top-1/2 -translate-y-1/2"
+          className="left-[-150px] top-1/2 -translate-y-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
         <GlowOrb
           src="/images/glows/glow-contact-2.svg"
           size={299}
           rotate={-60}
-          className="right-[-100px] top-[-100px]"
+          className="right-[-100px] top-[-100px] scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
-      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16 py-16 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
         <SectionRevealItem className="flex flex-col items-center gap-7 text-center lg:max-w-[558px] lg:items-start lg:text-left">
           <div className="flex flex-col items-center gap-3 lg:items-start">
             <p className="text-mono-lg text-border-button">
@@ -155,9 +158,21 @@ export function ContactSection() {
         <SectionRevealItem className="w-full lg:max-w-[499px]">
           <form
             onSubmit={handleSubmit}
-            className="flex w-full flex-col gap-4"
+            className="flex w-full flex-col gap-3 lg:gap-4"
             noValidate
           >
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={form.website}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, website: event.target.value }))
+              }
+              className="pointer-events-none absolute -left-[9999px] h-0 w-0 opacity-0"
+            />
             <InputField
               label="Full Name"
               placeholder="Full Name"
@@ -214,8 +229,9 @@ export function ContactSection() {
             <Button
               type="submit"
               variant="secondary"
-              size="xl"
+              size="m"
               disabled={isSubmitting}
+              className="lg:gap-2 lg:px-6 lg:py-4 lg:text-body lg:font-semibold"
             >
               {isSubmitting ? "Sending..." : "Discuss Your Project"}
             </Button>

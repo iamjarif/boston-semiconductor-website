@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { ButtonLabelReveal } from "@/components/ui/ButtonLabelReveal";
+import { usePrefersHover } from "@/hooks/use-prefers-hover";
 import { useScrollToSection } from "@/lib/navigation/use-scroll-to-section";
 
 export type ButtonSize = "s" | "m" | "l" | "xl";
@@ -36,11 +37,11 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "border border-border-button bg-gradient-button-primary text-text-primary hover:bg-gradient-button-primary-hover",
+    "border border-border-button bg-gradient-button-primary text-text-primary pointer-fine:hover:bg-gradient-button-primary-hover",
   secondary:
-    "border border-neutral-900 bg-gradient-button-secondary text-text-on-brand hover:bg-gradient-button-secondary-hover",
+    "border border-neutral-900 bg-gradient-button-secondary text-text-on-brand pointer-fine:hover:bg-gradient-button-secondary-hover",
   outline:
-    "border-2 border-neutral-900 text-text-primary hover:border-neutral-800",
+    "border-2 border-neutral-900 text-text-primary pointer-fine:hover:border-neutral-800",
   ghost: "text-text-primary",
 };
 
@@ -65,6 +66,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const canHover = usePrefersHover();
   const scrollToSection = useScrollToSection();
   const activeClasses =
     active && variant === "ghost"
@@ -77,13 +79,13 @@ export function Button({
   const ariaCurrent = active ? ("page" as const) : undefined;
 
   const handleMouseEnter = (event: MouseEvent<HTMLElement>) => {
-    if (disabled) return;
+    if (disabled || !canHover) return;
     setIsHovered(true);
     onMouseEnter?.(event as MouseEvent<HTMLButtonElement>);
   };
 
   const handleMouseLeave = (event: MouseEvent<HTMLElement>) => {
-    if (disabled) return;
+    if (disabled || !canHover) return;
     setIsHovered(false);
     onMouseLeave?.(event as MouseEvent<HTMLButtonElement>);
   };

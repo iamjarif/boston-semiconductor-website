@@ -129,7 +129,7 @@ body {
     border-color 300ms ease;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card-focus-grid:has(.card-focus-target:hover) .card-focus-target:not(:hover) {
     filter: blur(4px);
     opacity: 0.55;

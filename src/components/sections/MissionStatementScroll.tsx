@@ -11,6 +11,7 @@ const MISSION_TEXT =
   "We are a specialized semiconductor design partner, delivering silicon-proven VLSI solutions across advanced process nodes for clients in power electronics, telecommunications, automotive, and IoT.";
 
 const PARALLAX_TRAVEL = 96;
+const desktopMediaQuery = "(min-width: 1024px)";
 
 export function MissionStatementScroll() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -38,6 +39,8 @@ export function MissionStatementScroll() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (reduceMotion) return;
+
+    if (!window.matchMedia(desktopMediaQuery).matches) return;
 
     // ScrollTrigger pin/scrub requires Lenis scrollerProxy from SmoothScrollProvider.
     if (!lenis) return;
@@ -109,25 +112,25 @@ export function MissionStatementScroll() {
           speed={0.2}
           src="/images/glows/glow-mission-1.svg"
           size={299}
-          className="right-[-150px] top-[100px]"
+          className="right-[-150px] top-[100px] scale-50 sm:scale-75 lg:scale-100"
         />
         <ParallaxGlowOrb
           speed={0.3}
           src="/images/glows/glow-mission-2.svg"
           size={366}
           rotate={-165}
-          className="left-[-100px] top-[250px]"
+          className="left-[-100px] top-[250px] scale-50 sm:scale-75 lg:scale-100"
         />
         <ParallaxGlowOrb
           speed={0.4}
           centered
           src="/images/glows/glow-mission-3.svg"
           size={524}
-          className="bottom-[-200px] left-1/2"
+          className="bottom-[-200px] left-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
-      <p className="relative z-10 max-w-[1316px] text-center text-h2">
+      <p className="relative z-10 max-w-[1316px] text-center text-h2 max-sm:text-[2.25rem]">
         {splitText}
       </p>
     </section>

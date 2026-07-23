@@ -27,7 +27,7 @@ export default async function BlogPage() {
         <GlowOrb
           src="/images/glows/glow-hero.svg"
           size={600}
-          className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+          className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 

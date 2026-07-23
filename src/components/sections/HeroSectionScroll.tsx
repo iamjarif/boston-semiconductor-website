@@ -62,7 +62,7 @@ export function HeroSectionScroll() {
         <GlowOrb
           src="/images/glows/glow-hero.svg"
           size={600}
-          className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+          className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 scale-50 sm:scale-75 lg:scale-100"
         />
       </div>
 
@@ -86,7 +86,7 @@ export function HeroSectionScroll() {
             <p className="text-mono-lg text-brand-primary">
               Precision VLSI Engineering
             </p>
-            <h1 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text text-h1 text-transparent sm:text-title">
+            <h1 className="bg-gradient-to-b from-text-primary to-neutral-800 bg-clip-text font-[family-name:var(--font-heading),system-ui,sans-serif] text-[2.75rem] font-bold leading-[1.06] tracking-[-0.04em] text-transparent sm:text-[3.25rem] lg:text-[4.5rem] lg:tracking-[-0.06em] xl:text-[5rem]">
               Silicon Excellence
               <br />
               Delivered at Scale.
@@ -95,18 +95,28 @@ export function HeroSectionScroll() {
 
           <SectionRevealItem
             as="p"
-            className="max-w-[750px] text-h6 text-neutral-800"
+            className="max-w-[750px] text-body-sm text-neutral-800 lg:text-body"
           >
             Premium chip design services for the world&apos;s most demanding
             technology companies. From concept to tapeout, we engineer the
             future.
           </SectionRevealItem>
 
-          <SectionRevealItem className="flex flex-wrap items-center justify-center gap-4">
-            <Button sectionId="contact" variant="primary" size="xl">
+          <SectionRevealItem className="flex flex-row flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <Button
+              sectionId="contact"
+              variant="primary"
+              size="l"
+              className="shrink-0 lg:gap-2 lg:px-6 lg:py-4 lg:text-body lg:font-semibold lg:[&_svg]:size-5"
+            >
               Discuss Your Project
             </Button>
-            <Button sectionId="services" variant="secondary" size="xl">
+            <Button
+              sectionId="services"
+              variant="secondary"
+              size="l"
+              className="shrink-0 lg:gap-2 lg:px-6 lg:py-4 lg:text-body lg:font-semibold lg:[&_svg]:size-5"
+            >
               Explore Services
             </Button>
           </SectionRevealItem>

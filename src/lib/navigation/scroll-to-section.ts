@@ -46,11 +46,3 @@ export function peekPendingSectionScroll(): string | null {
 export function clearPendingSectionScroll() {
   sessionStorage.removeItem(PENDING_SECTION_SCROLL_KEY);
 }
-
-export function consumePendingSectionScroll(): string | null {
-  const target = peekPendingSectionScroll();
-  if (target) {
-    clearPendingSectionScroll();
-  }
-  return target;
-}

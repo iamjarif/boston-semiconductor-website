@@ -23,12 +23,12 @@ export function Card({
 }: CardProps) {
   return (
     <Component
-      className={`relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-bg-surface p-8 ${hoverEffect ? "group transition-colors hover:border-border-strong hover:bg-bg-surface-raised" : ""} ${className}`}
+      className={`relative flex w-full flex-col gap-4 overflow-hidden rounded-3xl border border-transparent bg-bg-surface p-8 ${hoverEffect ? "group transition-colors pointer-fine:hover:border-border-strong pointer-fine:hover:bg-bg-surface-raised" : ""} ${className}`}
     >
       {hoverEffect ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity pointer-fine:group-hover:opacity-100"
         >
           <div className="absolute inset-0 bg-gradient-to-b from-brand-primary/10 via-brand-primary/5 to-transparent" />
         </div>

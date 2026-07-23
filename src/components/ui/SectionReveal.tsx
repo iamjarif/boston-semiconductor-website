@@ -4,7 +4,9 @@ import { motion, useInView, useReducedMotion } from "motion/react";
 import {
   createContext,
   useContext,
+  useEffect,
   useRef,
+  useState,
   type ReactNode,
 } from "react";
 
@@ -27,7 +29,14 @@ interface SectionRevealProps {
 export function SectionRevealRoot({ children, className = "" }: SectionRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, REVEAL_VIEWPORT);
+  const [hasRevealed, setHasRevealed] = useState(false);
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (isInView) {
+      setHasRevealed(true);
+    }
+  }, [isInView]);
 
   if (reduceMotion) {
     return (
@@ -44,7 +53,7 @@ export function SectionRevealRoot({ children, className = "" }: SectionRevealPro
         className={className}
         variants={sectionRevealContainer}
         initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
+        animate={hasRevealed ? "visible" : "hidden"}
       >
         {children}
       </motion.div>
@@ -57,6 +66,7 @@ interface SectionRevealItemProps {
   className?: string;
   as?: "div" | "p";
   layoutOnly?: boolean;
+  blurFromLg?: boolean;
 }
 
 export function SectionRevealItem({
@@ -64,9 +74,26 @@ export function SectionRevealItem({
   className = "",
   as = "div",
   layoutOnly = false,
+  blurFromLg = false,
 }: SectionRevealItemProps) {
   const motionEnabled = useContext(SectionRevealMotionContext);
-  const variants = layoutOnly ? sectionRevealItemLayout : sectionRevealItem;
+  const [applyBlur, setApplyBlur] = useState(!blurFromLg);
+
+  useEffect(() => {
+    if (!blurFromLg) return;
+
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const update = () => setApplyBlur(mediaQuery.matches);
+
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, [blurFromLg]);
+
+  const variants =
+    layoutOnly || (blurFromLg && !applyBlur)
+      ? sectionRevealItemLayout
+      : sectionRevealItem;
 
   if (!motionEnabled) {
     if (as === "p") {
@@ -90,10 +117,26 @@ export function SectionRevealItem({
   );
 }
 
-export function SectionRevealBlurWrap({ children, className = "" }: SectionRevealProps) {
+export function SectionRevealBlurWrap({
+  children,
+  className = "",
+  blurFromLg = false,
+}: SectionRevealProps & { blurFromLg?: boolean }) {
   const motionEnabled = useContext(SectionRevealMotionContext);
+  const [applyBlur, setApplyBlur] = useState(!blurFromLg);
 
-  if (!motionEnabled) {
+  useEffect(() => {
+    if (!blurFromLg) return;
+
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const update = () => setApplyBlur(mediaQuery.matches);
+
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, [blurFromLg]);
+
+  if (!motionEnabled || !applyBlur) {
     return <div className={className}>{children}</div>;
   }
 
