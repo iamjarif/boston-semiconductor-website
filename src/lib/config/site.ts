@@ -14,12 +14,12 @@ export const siteConfig: SiteConfig = {
     email: "info@bostonsemiconductor.com",
     locations: [
       {
-        label: "Engineering Center",
+        label: "ODC",
         detail: "Dhaka, Bangladesh",
       },
       {
-        label: "Management",
-        detail: "United States",
+        label: "Head Quarter",
+        detail: "Massachusetts, USA",
       },
     ],
   },
