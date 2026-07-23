@@ -26,8 +26,16 @@ const CARD_DEPTHS = [0.6, 1.0, 0.8, 0.7, 1.1, 0.9] as const;
 const FLOAT_SENSITIVITY = 0.3;
 const FLOAT_EASING = 0.07;
 
-function cardAlignClass(align: "start" | "end") {
-  return align === "end" ? "lg:self-end" : "lg:self-start";
+function cardItemClass(align: "start" | "end", index: number) {
+  const alignClass = align === "end" ? "lg:self-end" : "lg:self-start";
+  const middleNudge =
+    index === 1 ? "lg:-translate-y-8" : index === 4 ? "lg:translate-y-8" : "";
+
+  return [alignClass, middleNudge].filter(Boolean).join(" ");
+}
+
+function cardContentClass() {
+  return "w-full lg:min-h-[200px]";
 }
 
 function WhyUsHeadline() {
@@ -53,7 +61,7 @@ function WhyUsRevealLayout({
   renderCard: (card: WhyUsCardData, index: number) => ReactNode;
 }) {
   return (
-    <SectionReveal className="flex w-full flex-col items-center gap-6 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:gap-y-16">
+    <SectionReveal className="flex w-full flex-col items-center gap-6 lg:grid lg:grid-cols-3 lg:items-stretch lg:gap-x-6 lg:gap-y-16">
       <SectionRevealItem className="order-1 w-full pb-4 lg:order-2 lg:col-span-3 lg:pb-0">
         <WhyUsHeadline />
       </SectionRevealItem>
@@ -61,7 +69,7 @@ function WhyUsRevealLayout({
       {allCards.map((card, index) => (
         <SectionRevealItem
           key={card.title}
-          className={`order-2 w-full ${index < 3 ? "lg:order-1" : "lg:order-3"}`}
+          className={`order-2 w-full ${index < 3 ? "lg:order-1" : "lg:order-3"} ${cardItemClass(card.align, index)}`}
         >
           {renderCard(card, index)}
         </SectionRevealItem>
@@ -87,7 +95,7 @@ export function WhyUsParallaxCards({
       title={card.title}
       subText={card.subText}
       hoverEffect={false}
-      className={`lg:min-h-[200px] ${cardAlignClass(card.align)}`}
+      className={cardContentClass()}
     />
   );
 
@@ -95,7 +103,7 @@ export function WhyUsParallaxCards({
     <FloatingElement
       key={card.title}
       depth={CARD_DEPTHS[index]}
-      className={`lg:min-h-[200px] ${cardAlignClass(card.align)}`}
+      className={cardContentClass()}
     >
       <Card
         caption={card.caption}
