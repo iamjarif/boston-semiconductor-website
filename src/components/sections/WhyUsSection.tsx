@@ -28,13 +28,6 @@ const whyUsCards: WhyUsCardData[] = [
     align: "start",
   },
   {
-    caption: "TIME ZONE",
-    title: "APAC-aligned hours",
-    subText:
-      "Bangladesh engineering hub, Taiwan-based management - 2 hours from Malaysia.",
-    align: "end",
-  },
-  {
     caption: "IP-SAFE",
     title: "Air-gapped delivery",
     subText:
@@ -57,8 +50,8 @@ const whyUsCards: WhyUsCardData[] = [
   },
 ];
 
-const firstRow = whyUsCards.slice(0, 3);
-const secondRow = whyUsCards.slice(3);
+const firstRow = whyUsCards.slice(0, 2);
+const secondRow = whyUsCards.slice(2);
 
 export function WhyUsSection() {
   const sectionRef = useRef<HTMLElement>(null);

@@ -21,7 +21,7 @@ interface WhyUsParallaxCardsProps {
   sectionRef: RefObject<HTMLElement | null>;
 }
 
-const CARD_DEPTHS = [0.6, 1.0, 0.8, 0.7, 1.1, 0.9] as const;
+const CARD_DEPTHS = [0.6, 1.0, 0.7, 1.1, 0.9] as const;
 
 const FLOAT_SENSITIVITY = 0.3;
 const FLOAT_EASING = 0.07;
@@ -29,13 +29,17 @@ const FLOAT_EASING = 0.07;
 function cardItemClass(align: "start" | "end", index: number) {
   const alignClass = align === "end" ? "lg:self-end" : "lg:self-start";
   const middleNudge =
-    index === 1 ? "lg:-translate-y-8" : index === 4 ? "lg:translate-y-8" : "";
+    index === 1 ? "lg:-translate-y-8" : index === 3 ? "lg:translate-y-8" : "";
 
   return [alignClass, middleNudge].filter(Boolean).join(" ");
 }
 
 function cardContentClass() {
   return "w-full lg:min-h-[200px]";
+}
+
+function topRowCardClass() {
+  return "w-full lg:w-[calc((100%-3rem)/3)]";
 }
 
 function WhyUsHeadline() {
@@ -54,26 +58,45 @@ function WhyUsHeadline() {
 }
 
 function WhyUsRevealLayout({
-  allCards,
+  firstRow,
+  secondRow,
   renderCard,
 }: {
-  allCards: WhyUsCardData[];
+  firstRow: WhyUsCardData[];
+  secondRow: WhyUsCardData[];
   renderCard: (card: WhyUsCardData, index: number) => ReactNode;
 }) {
   return (
-    <SectionReveal className="flex w-full flex-col items-center gap-6 lg:grid lg:grid-cols-3 lg:items-stretch lg:gap-x-6 lg:gap-y-16">
-      <SectionRevealItem className="order-1 w-full pb-4 lg:order-2 lg:col-span-3 lg:pb-0">
+    <SectionReveal className="flex w-full flex-col items-center gap-6 lg:gap-y-16">
+      <div className="order-2 flex w-full flex-col gap-6 lg:order-1 lg:flex-row lg:items-start lg:justify-center lg:gap-x-6">
+        {firstRow.map((card, index) => (
+          <SectionRevealItem
+            key={card.title}
+            className={`w-full ${topRowCardClass()}`}
+          >
+            {renderCard(card, index)}
+          </SectionRevealItem>
+        ))}
+      </div>
+
+      <SectionRevealItem className="order-1 w-full pb-4 lg:order-2 lg:pb-0">
         <WhyUsHeadline />
       </SectionRevealItem>
 
-      {allCards.map((card, index) => (
-        <SectionRevealItem
-          key={card.title}
-          className={`order-2 w-full ${index < 3 ? "lg:order-1" : "lg:order-3"} ${cardItemClass(card.align, index)}`}
-        >
-          {renderCard(card, index)}
-        </SectionRevealItem>
-      ))}
+      <div className="order-3 grid w-full grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-x-6">
+        {secondRow.map((card, index) => {
+          const cardIndex = firstRow.length + index;
+
+          return (
+            <SectionRevealItem
+              key={card.title}
+              className={`w-full ${cardItemClass(card.align, cardIndex)}`}
+            >
+              {renderCard(card, cardIndex)}
+            </SectionRevealItem>
+          );
+        })}
+      </div>
     </SectionReveal>
   );
 }
@@ -86,7 +109,6 @@ export function WhyUsParallaxCards({
   const canHover = usePrefersHover();
   const reduceMotion = useReducedMotion();
   const parallaxEnabled = canHover && !reduceMotion;
-  const allCards = [...firstRow, ...secondRow];
 
   const renderStaticCard = (card: WhyUsCardData) => (
     <Card
@@ -118,7 +140,8 @@ export function WhyUsParallaxCards({
   if (!parallaxEnabled) {
     return (
       <WhyUsRevealLayout
-        allCards={allCards}
+        firstRow={firstRow}
+        secondRow={secondRow}
         renderCard={(card) => renderStaticCard(card)}
       />
     );
@@ -132,7 +155,8 @@ export function WhyUsParallaxCards({
       easingFactor={FLOAT_EASING}
     >
       <WhyUsRevealLayout
-        allCards={allCards}
+        firstRow={firstRow}
+        secondRow={secondRow}
         renderCard={(card, index) => renderParallaxCard(card, index)}
       />
     </Floating>

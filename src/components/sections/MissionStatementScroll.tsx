@@ -2,7 +2,7 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { ParallaxGlowOrb } from "@/components/ui/ParallaxGlowOrb";
 import { useLenis } from "@/components/ui/SmoothScrollProvider";
@@ -16,6 +16,7 @@ const desktopMediaQuery = "(min-width: 1024px)";
 export function MissionStatementScroll() {
   const sectionRef = useRef<HTMLElement>(null);
   const lenis = useLenis();
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const splitText = useMemo(
     () =>
@@ -35,15 +36,21 @@ export function MissionStatementScroll() {
   );
 
   useLayoutEffect(() => {
+    const mq = window.matchMedia(desktopMediaQuery);
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useLayoutEffect(() => {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (reduceMotion) return;
 
-    if (!window.matchMedia(desktopMediaQuery).matches) return;
-
     // ScrollTrigger pin/scrub requires Lenis scrollerProxy from SmoothScrollProvider.
-    if (!lenis) return;
+    if (isDesktop && !lenis) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -56,16 +63,24 @@ export function MissionStatementScroll() {
     gsap.set(words, { opacity: 0.1, y: 12 });
 
     const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: "top top",
-        end: () => `+=${window.innerHeight}`,
-        pin: true,
-        pinSpacing: true,
-        scrub: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      },
+      scrollTrigger: isDesktop
+        ? {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${window.innerHeight}`,
+            pin: true,
+            pinSpacing: true,
+            scrub: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          }
+        : {
+            trigger: section,
+            start: "top 85%",
+            end: "center center",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
     });
 
     tl.to(words, {
@@ -95,7 +110,7 @@ export function MissionStatementScroll() {
       tl.scrollTrigger?.kill();
       tl.kill();
     };
-  }, [lenis]);
+  }, [isDesktop, lenis]);
 
   return (
     <section
