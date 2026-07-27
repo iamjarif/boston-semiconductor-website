@@ -19,7 +19,7 @@ export const siteConfig: SiteConfig = {
       },
       {
         label: "Head Quarter",
-        detail: "Massachusetts, USA",
+        detail: "USA",
       },
     ],
   },
