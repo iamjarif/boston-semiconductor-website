@@ -72,10 +72,10 @@ export function Footer() {
               aria-label={`${siteConfig.name} home`}
             >
               <Image
-                src="/images/logo-mark.svg"
+                src="/images/logo.png"
                 alt={siteConfig.name}
-                width={102}
-                height={42}
+                width={382}
+                height={159}
                 className="h-[42px] w-auto"
               />
             </button>
