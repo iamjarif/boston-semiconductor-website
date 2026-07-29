@@ -31,7 +31,7 @@ export function buildBrandedEmailHtml(params: BrandedEmailLayoutParams): string 
   const ctaRow = params.cta
     ? `<tr>
             <td style="padding: 24px 32px 8px 32px;">
-              <a href="${escapeHtml(params.cta.href.trim())}" style="display: inline-block; border-radius: 8px; background: linear-gradient(180deg, ${SIGNAL_GREEN} 0%, #0e8462 100%); color: #0a0a0a; font-family: 'Inter', Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 600; line-height: 1; padding: 14px 20px; text-decoration: none;">
+              <a href="${escapeHtml(params.cta.href.trim())}" style="display: inline-block; border-radius: 8px; background: linear-gradient(180deg, ${SIGNAL_GREEN} 0%, #0e8462 100%); color: #ffffff; font-family: 'Inter', Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 600; line-height: 1; padding: 14px 20px; text-decoration: none;">
                 ${escapeHtml(params.cta.label.trim())}
               </a>
             </td>
