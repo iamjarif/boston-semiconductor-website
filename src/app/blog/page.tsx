@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/SectionReveal";
 import { getBlogPosts } from "@/lib/blog";
 
-/** ISR: revalidate blog list every hour so new posts appear without full redeploy. */
-export const revalidate = 3600;
+/** Fallback ISR if the Sanity webhook is missed (24 hours). Primary refresh is on-demand via webhook. */
+export const revalidate = 86_400;
 
 const LISTING_PAGE_SIZE = 9;
 

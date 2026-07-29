@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { getAllPostSlugs, getBlogPost, getRelatedPosts } from "@/lib/blog";
 
-/** ISR: revalidate individual posts every hour. */
-export const revalidate = 3600;
+/** Fallback ISR if the Sanity webhook is missed (24 hours). Primary refresh is on-demand via webhook. */
+export const revalidate = 86_400;
 
 const ARTICLE_MAX_WIDTH = "max-w-[750px]";
 

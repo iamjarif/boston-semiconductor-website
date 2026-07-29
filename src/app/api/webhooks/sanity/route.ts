@@ -1,11 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
 import { parseBody } from "next-sanity/webhook";
 import { Resend } from "resend";
 
 import { sendSubscriberBroadcast } from "@/lib/email/send-subscriber-batch";
 import { getSiteUrl } from "@/lib/email/resend-config";
 import { listActiveNewsletterSubscriberEmails } from "@/lib/newsletter/subscribers";
+import { revalidateBlogContent } from "@/lib/sanity/revalidate-blog";
 import { methodNotAllowedResponse } from "@/lib/security/request";
 import { getSanityWriteClient } from "@/lib/sanity/write-client";
 
@@ -75,18 +75,22 @@ export async function POST(request: NextRequest) {
     const title = post.title?.trim();
     const excerpt = post.excerpt?.trim();
 
-    if (slug) {
-      revalidatePath("/blog");
-      revalidatePath(`/blog/${slug}`);
-    }
+    const revalidated = revalidateBlogContent(slug);
 
     if (post.notificationSentAt) {
-      return NextResponse.json({ ok: true, skipped: "already_notified" });
+      return NextResponse.json({
+        ok: true,
+        revalidated,
+        skipped: "already_notified",
+      });
     }
 
     if (!title || !slug || !excerpt) {
       return NextResponse.json(
-        { error: "Post is missing title, slug, or excerpt." },
+        {
+          error: "Post is missing title, slug, or excerpt.",
+          revalidated,
+        },
         { status: 400 },
       );
     }
@@ -94,14 +98,21 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: "Email service is not configured." },
+        {
+          error: "Email service is not configured.",
+          revalidated,
+        },
         { status: 500 },
       );
     }
 
     const subscriberEmails = await listActiveNewsletterSubscriberEmails();
     if (subscriberEmails.length === 0) {
-      return NextResponse.json({ ok: true, skipped: "no_subscribers" });
+      return NextResponse.json({
+        ok: true,
+        revalidated,
+        skipped: "no_subscribers",
+      });
     }
 
     const postUrl = `${getSiteUrl()}/blog/${slug}`;
@@ -118,7 +129,10 @@ export async function POST(request: NextRequest) {
     if (!sendResult.ok) {
       console.error("Subscriber broadcast error:", sendResult.error);
       return NextResponse.json(
-        { error: "Failed to send subscriber notification." },
+        {
+          error: "Failed to send subscriber notification.",
+          revalidated,
+        },
         { status: 500 },
       );
     }
@@ -137,6 +151,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       ok: true,
+      revalidated,
       notified: true,
       slug,
       recipientCount: subscriberEmails.length,

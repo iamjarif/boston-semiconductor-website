@@ -1,5 +1,6 @@
 import type { PortableTextBlock } from "@portabletext/types";
 
+import { getSanityFetchOptions } from "@/lib/sanity/cache-tags";
 import { getSanityClient, isSanityConfigured } from "@/lib/sanity/client";
 import {
   postBySlugQuery,
@@ -35,7 +36,7 @@ export async function fetchPosts(
   const client = getSanityClient();
   if (!client) return [];
 
-  return client.fetch<SanityPostRaw[]>(postsQuery, { start, end });
+  return client.fetch<SanityPostRaw[]>(postsQuery, { start, end }, getSanityFetchOptions());
 }
 
 export async function fetchPostsCount(): Promise<number> {
@@ -44,7 +45,7 @@ export async function fetchPostsCount(): Promise<number> {
   const client = getSanityClient();
   if (!client) return 0;
 
-  return client.fetch<number>(postsCountQuery);
+  return client.fetch<number>(postsCountQuery, {}, getSanityFetchOptions());
 }
 
 export async function fetchPostBySlug(
@@ -55,7 +56,11 @@ export async function fetchPostBySlug(
   const client = getSanityClient();
   if (!client) return null;
 
-  return client.fetch<SanityPostRaw | null>(postBySlugQuery, { slug });
+  return client.fetch<SanityPostRaw | null>(
+    postBySlugQuery,
+    { slug },
+    getSanityFetchOptions(slug),
+  );
 }
 
 export async function fetchAllPostSlugs(): Promise<{ slug: string }[]> {
@@ -64,7 +69,7 @@ export async function fetchAllPostSlugs(): Promise<{ slug: string }[]> {
   const client = getSanityClient();
   if (!client) return [];
 
-  return client.fetch<{ slug: string }[]>(postSlugsQuery);
+  return client.fetch<{ slug: string }[]>(postSlugsQuery, {}, getSanityFetchOptions());
 }
 
 export async function fetchRelatedPosts(
@@ -77,11 +82,11 @@ export async function fetchRelatedPosts(
   const client = getSanityClient();
   if (!client) return [];
 
-  return client.fetch<SanityPostRaw[]>(relatedPostsQuery, {
-    slug,
-    category,
-    limit,
-  });
+  return client.fetch<SanityPostRaw[]>(
+    relatedPostsQuery,
+    { slug, category, limit },
+    getSanityFetchOptions(slug),
+  );
 }
 
 export async function fetchRecentPostsExcluding(
@@ -93,8 +98,9 @@ export async function fetchRecentPostsExcluding(
   const client = getSanityClient();
   if (!client) return [];
 
-  return client.fetch<SanityPostRaw[]>(recentPostsExcludingQuery, {
-    slug,
-    limit,
-  });
+  return client.fetch<SanityPostRaw[]>(
+    recentPostsExcludingQuery,
+    { slug, limit },
+    getSanityFetchOptions(),
+  );
 }
