@@ -79,13 +79,13 @@ No restructuring of existing code required.
 
 ## Newsletter & blog notifications
 
-Footer newsletter signups are stored in a **Resend Segment** and new blog posts trigger a **broadcast email** via a Sanity webhook.
+Footer newsletter signups are stored in **Sanity** as subscriber records. New blog posts trigger **subscriber-only emails** via a Sanity webhook. Signups do **not** send any email to admins.
 
 ### 1. Resend
 
-1. Create a [Resend](https://resend.com/) Segment (e.g. “Blog Newsletter”) in the dashboard.
-2. Copy the **Segment ID** into `.env.local` as `RESEND_SEGMENT_ID`.
-3. Ensure `RESEND_API_KEY` is set. (`CONTACT_FORM_TO_EMAIL` is only used by the contact form — newsletter signups do not email admins.)
+Ensure `RESEND_API_KEY` is set. Your existing send-only Resend key works for blog notification emails and the contact form.
+
+`CONTACT_FORM_TO_EMAIL` is only used by the contact form — newsletter signups do not email admins.
 
 ### 2. Sanity write token
 
@@ -97,7 +97,7 @@ Add to `.env.local`:
 SANITY_API_WRITE_TOKEN=your-token
 ```
 
-This records `notificationSentAt` on each post so subscribers are not emailed twice when you edit a post.
+This stores newsletter subscribers and records `notificationSentAt` on each post so subscribers are not emailed twice when you edit a post.
 
 ### 3. Sanity webhook
 
@@ -112,7 +112,9 @@ In [sanity.io/manage](https://www.sanity.io/manage) → your project → **API**
 | **Projection** | `{ "_type": _type, "_id": _id, "title": title, "slug": slug.current, "excerpt": excerpt, "notificationSentAt": notificationSentAt }` |
 | **Secret** | Generate a secret → set as `SANITY_WEBHOOK_SECRET` in `.env.local` |
 
-When you **publish** a new blog post (first time only), all segment subscribers receive an email with the title, excerpt, and link to the article. Edits to already-notified posts are skipped.
+When you **publish** a new blog post (first time only), all active subscribers receive an email with the title, excerpt, and link to the article. Edits to already-notified posts are skipped.
+
+Subscribers can unsubscribe from each email. Signups are visible in Sanity Studio under **Newsletter Subscriber**.
 
 ## Scripts
 

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 
 import {
   enforceFormRateLimit,
@@ -8,12 +7,7 @@ import {
 } from "@/lib/security/api-route";
 import { methodNotAllowedResponse } from "@/lib/security/request";
 import { newsletterFormSchema } from "@/lib/security/validation";
-
-function isExistingContactError(message: string | undefined): boolean {
-  if (!message) return false;
-  const normalized = message.toLowerCase();
-  return normalized.includes("already") || normalized.includes("exist");
-}
+import { subscribeNewsletterSubscriber } from "@/lib/newsletter/subscribers";
 
 export async function GET() {
   return methodNotAllowedResponse();
@@ -38,26 +32,17 @@ export async function POST(request: Request) {
       return honeypotAcceptedResponse();
     }
 
-    const apiKey = process.env.RESEND_API_KEY;
-    const segmentId = process.env.RESEND_SEGMENT_ID;
+    // Store the subscriber in Sanity only. No admin notification email is sent.
+    const result = await subscribeNewsletterSubscriber(email);
 
-    if (!apiKey || !segmentId) {
-      return NextResponse.json(
-        { error: "Email service is not configured." },
-        { status: 500 },
-      );
-    }
+    if (!result.ok) {
+      if (result.reason === "not_configured") {
+        return NextResponse.json(
+          { error: "Newsletter service is not configured." },
+          { status: 500 },
+        );
+      }
 
-    const resend = new Resend(apiKey);
-
-    const { error: contactError } = await resend.contacts.create({
-      email,
-      unsubscribed: false,
-      segments: [{ id: segmentId }],
-    });
-
-    if (contactError && !isExistingContactError(contactError.message)) {
-      console.error("Resend contact error:", contactError);
       return NextResponse.json(
         { error: "Failed to subscribe. Please try again." },
         { status: 500 },

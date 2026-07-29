@@ -3,11 +3,9 @@ import { revalidatePath } from "next/cache";
 import { parseBody } from "next-sanity/webhook";
 import { Resend } from "resend";
 
-import { buildNewPostBroadcastEmailHtml } from "@/lib/email/new-post-broadcast-template";
-import {
-  getSiteUrl,
-  RESEND_FROM_ADDRESS,
-} from "@/lib/email/resend-config";
+import { sendSubscriberBroadcast } from "@/lib/email/send-subscriber-batch";
+import { getSiteUrl } from "@/lib/email/resend-config";
+import { listActiveNewsletterSubscriberEmails } from "@/lib/newsletter/subscribers";
 import { methodNotAllowedResponse } from "@/lib/security/request";
 import { getSanityWriteClient } from "@/lib/sanity/write-client";
 
@@ -94,31 +92,31 @@ export async function POST(request: NextRequest) {
     }
 
     const apiKey = process.env.RESEND_API_KEY;
-    const segmentId = process.env.RESEND_SEGMENT_ID;
-
-    if (!apiKey || !segmentId) {
+    if (!apiKey) {
       return NextResponse.json(
-        { error: "Resend broadcast is not configured." },
+        { error: "Email service is not configured." },
         { status: 500 },
       );
     }
 
+    const subscriberEmails = await listActiveNewsletterSubscriberEmails();
+    if (subscriberEmails.length === 0) {
+      return NextResponse.json({ ok: true, skipped: "no_subscribers" });
+    }
+
     const postUrl = `${getSiteUrl()}/blog/${slug}`;
-    const html = buildNewPostBroadcastEmailHtml({ title, excerpt, postUrl });
     const resend = new Resend(apiKey);
 
-    const { error: broadcastError } = await resend.broadcasts.create({
-      name: `Blog: ${title}`,
-      segmentId,
-      from: RESEND_FROM_ADDRESS,
-      subject: `New article: ${title}`,
-      previewText: excerpt,
-      html,
-      send: true,
+    const sendResult = await sendSubscriberBroadcast(resend, {
+      title,
+      excerpt,
+      postUrl,
+      subscriberEmails,
+      idempotencyPrefix: `blog-post/${slug}`,
     });
 
-    if (broadcastError) {
-      console.error("Resend broadcast error:", broadcastError);
+    if (!sendResult.ok) {
+      console.error("Subscriber broadcast error:", sendResult.error);
       return NextResponse.json(
         { error: "Failed to send subscriber notification." },
         { status: 500 },
@@ -141,6 +139,7 @@ export async function POST(request: NextRequest) {
       ok: true,
       notified: true,
       slug,
+      recipientCount: subscriberEmails.length,
     });
   } catch (error) {
     console.error("Sanity webhook error:", error);

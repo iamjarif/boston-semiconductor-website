@@ -2,6 +2,7 @@ export interface NewPostBroadcastEmailParams {
   title: string;
   excerpt: string;
   postUrl: string;
+  unsubscribeUrl: string;
 }
 
 const SIGNAL_GREEN = "#18cb96";
@@ -20,6 +21,7 @@ export function buildNewPostBroadcastEmailHtml(
   const title = escapeHtml(params.title.trim());
   const excerpt = escapeHtml(params.excerpt.trim());
   const postUrl = escapeHtml(params.postUrl.trim());
+  const unsubscribeUrl = escapeHtml(params.unsubscribeUrl.trim());
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -72,7 +74,7 @@ export function buildNewPostBroadcastEmailHtml(
             <td class="email-footer" style="padding: 24px 32px 32px 32px; border-top: 1px solid #e5e5e5; font-family: 'Inter', Arial, Helvetica, sans-serif; font-size: 12px; line-height: 1.5; color: #6b6b6b;">
               You received this because you subscribed to Boston Semiconductor blog updates.
               <br /><br />
-              <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color: #6b6b6b;">Unsubscribe</a>
+              <a href="${unsubscribeUrl}" style="color: #6b6b6b;">Unsubscribe</a>
             </td>
           </tr>
         </table>
