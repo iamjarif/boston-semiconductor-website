@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { sendSubscriptionConfirmationEmail } from "@/lib/email/send-subscription-confirmation";
 import {
   enforceFormRateLimit,
   honeypotAcceptedResponse,
@@ -48,6 +49,10 @@ export async function POST(request: Request) {
         { status: 500 },
       );
     }
+
+    void sendSubscriptionConfirmationEmail(email).catch((error) => {
+      console.error("Subscription confirmation email failed:", error);
+    });
 
     return NextResponse.json({ ok: true });
   } catch {
