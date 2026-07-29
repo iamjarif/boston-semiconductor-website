@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/SectionReveal";
 import { getBlogPosts } from "@/lib/blog";
 
-/** Fallback ISR if the Sanity webhook is missed (24 hours). Primary refresh is on-demand via webhook. */
-export const revalidate = 86_400;
+/** Render on each request so listing updates without CDN prerender stale windows. */
+export const dynamic = "force-dynamic";
 
 const LISTING_PAGE_SIZE = 9;
 

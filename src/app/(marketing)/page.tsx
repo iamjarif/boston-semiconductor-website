@@ -8,8 +8,8 @@ import { SecuritySection } from "@/components/sections/SecuritySection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { WhyUsSection } from "@/components/sections/WhyUsSection";
 
-/** Fallback ISR if the Sanity webhook is missed (24 hours). Primary refresh is on-demand via webhook. */
-export const revalidate = 86_400;
+/** Render on each request so blog content updates without CDN prerender stale windows. */
+export const dynamic = "force-dynamic";
 
 export default function HomePage() {
   return (

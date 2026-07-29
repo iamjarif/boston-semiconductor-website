@@ -8,20 +8,15 @@ import { BlogPortableText } from "@/components/blog/BlogPortableText";
 import { RelatedPostsSection } from "@/components/blog/RelatedPostsSection";
 import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
-import { getAllPostSlugs, getBlogPost, getRelatedPosts } from "@/lib/blog";
+import { getBlogPost, getRelatedPosts } from "@/lib/blog";
 
-/** Fallback ISR if the Sanity webhook is missed (24 hours). Primary refresh is on-demand via webhook. */
-export const revalidate = 86_400;
+/** Render on each request so posts (including new slugs) update without CDN prerender stale windows. */
+export const dynamic = "force-dynamic";
 
 const ARTICLE_MAX_WIDTH = "max-w-[750px]";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = await getAllPostSlugs();
-  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
