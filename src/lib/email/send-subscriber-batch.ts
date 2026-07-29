@@ -2,6 +2,7 @@ import { Resend } from "resend";
 
 import { buildNewPostBroadcastEmailHtml } from "@/lib/email/new-post-broadcast-template";
 import { RESEND_FROM_ADDRESS } from "@/lib/email/resend-config";
+import { filterBroadcastRecipientEmails } from "@/lib/email/subscriber-email";
 import { buildUnsubscribeUrl } from "@/lib/newsletter/unsubscribe-token";
 
 const BATCH_SIZE = 100;
@@ -14,15 +15,44 @@ export interface SubscriberBroadcastParams {
   idempotencyPrefix: string;
 }
 
+export interface SubscriberBroadcastResult {
+  sentCount: number;
+  skippedRecipients: Array<{ email: string; reason: string }>;
+}
+
 export async function sendSubscriberBroadcast(
   resend: Resend,
   params: SubscriberBroadcastParams,
-): Promise<{ ok: true } | { ok: false; error: unknown }> {
+): Promise<
+  | ({ ok: true } & SubscriberBroadcastResult)
+  | ({ ok: false; error: unknown } & Partial<SubscriberBroadcastResult>)
+> {
   const { title, excerpt, postUrl, subscriberEmails, idempotencyPrefix } = params;
   const subject = `New article: ${title}`;
 
-  for (let index = 0; index < subscriberEmails.length; index += BATCH_SIZE) {
-    const chunk = subscriberEmails.slice(index, index + BATCH_SIZE);
+  const { deliverable, skipped } = filterBroadcastRecipientEmails(subscriberEmails);
+
+  if (skipped.length > 0) {
+    console.warn("[subscriber-broadcast] skipped non-deliverable recipients", {
+      skippedCount: skipped.length,
+      skipped,
+    });
+  }
+
+  if (deliverable.length === 0) {
+    return {
+      ok: false,
+      error: {
+        name: "no_deliverable_recipients",
+        message: "No deliverable subscriber emails after validation.",
+      },
+      sentCount: 0,
+      skippedRecipients: skipped,
+    };
+  }
+
+  for (let index = 0; index < deliverable.length; index += BATCH_SIZE) {
+    const chunk = deliverable.slice(index, index + BATCH_SIZE);
     const batchPayload = chunk.map((email) => {
       const unsubscribeUrl = buildUnsubscribeUrl(email) ?? `${postUrl}#newsletter`;
       const html = buildNewPostBroadcastEmailHtml({
@@ -48,9 +78,9 @@ export async function sendSubscriberBroadcast(
       idempotencyKey: `${idempotencyPrefix}/chunk-${index / BATCH_SIZE}`,
     });
     if (error) {
-      return { ok: false, error };
+      return { ok: false, error, sentCount: 0, skippedRecipients: skipped };
     }
   }
 
-  return { ok: true };
+  return { ok: true, sentCount: deliverable.length, skippedRecipients: skipped };
 }

@@ -204,7 +204,15 @@ export async function POST(request: NextRequest) {
     });
 
     if (!sendResult.ok) {
-      console.error("Subscriber broadcast error:", sendResult.error);
+      console.error(
+        "Subscriber broadcast error:",
+        JSON.stringify(sendResult.error, null, 2),
+      );
+      if (sendResult.skippedRecipients?.length) {
+        console.warn("[sanity-webhook] skipped recipients during broadcast", {
+          skipped: sendResult.skippedRecipients,
+        });
+      }
       return NextResponse.json(
         {
           error: "Failed to send subscriber notification.",
@@ -213,6 +221,13 @@ export async function POST(request: NextRequest) {
         },
         { status: 500 },
       );
+    }
+
+    if (sendResult.skippedRecipients.length > 0) {
+      console.warn("[sanity-webhook] broadcast sent with skipped recipients", {
+        sentCount: sendResult.sentCount,
+        skipped: sendResult.skippedRecipients,
+      });
     }
 
     if (writeClient) {
@@ -232,7 +247,8 @@ export async function POST(request: NextRequest) {
       revalidated,
       notified: true,
       slug,
-      recipientCount: subscriberEmails.length,
+      recipientCount: sendResult.sentCount,
+      skippedRecipientCount: sendResult.skippedRecipients.length,
     });
   } catch (error) {
     console.error("Sanity webhook error:", error);
