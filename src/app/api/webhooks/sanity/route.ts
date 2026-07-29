@@ -6,13 +6,15 @@ import { sendSubscriberBroadcast } from "@/lib/email/send-subscriber-batch";
 import { getSiteUrl } from "@/lib/email/resend-config";
 import {
   activeSubscribersQuery,
-  fetchActiveNewsletterSubscribers,
 } from "@/lib/newsletter/subscribers";
 import { revalidateBlogContent } from "@/lib/sanity/revalidate-blog";
 import { methodNotAllowedResponse } from "@/lib/security/request";
 import { getSanityWriteClient } from "@/lib/sanity/write-client";
 
+type SanityWebhookOperation = "create" | "update" | "delete";
+
 interface SanityPostDocument {
+  operation?: SanityWebhookOperation;
   _type?: string;
   _id?: string;
   title?: string;
@@ -23,6 +25,31 @@ interface SanityPostDocument {
 
 interface SanityWebhookPayload extends SanityPostDocument {
   result?: SanityPostDocument;
+}
+
+function resolveOperation(
+  request: NextRequest,
+  body: SanityWebhookPayload,
+): SanityWebhookOperation {
+  const headerOperation = request.headers.get("sanity-operation");
+  if (
+    headerOperation === "create" ||
+    headerOperation === "update" ||
+    headerOperation === "delete"
+  ) {
+    return headerOperation;
+  }
+
+  const bodyOperation = body.operation ?? body.result?.operation;
+  if (
+    bodyOperation === "create" ||
+    bodyOperation === "update" ||
+    bodyOperation === "delete"
+  ) {
+    return bodyOperation;
+  }
+
+  return "update";
 }
 
 function resolveSlug(
@@ -69,20 +96,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Empty webhook body." }, { status: 400 });
     }
 
+    const operation = resolveOperation(request, body);
     const post = extractPostDocument(body);
     if (!post) {
       return NextResponse.json({ ok: true, skipped: "not_a_published_post" });
     }
 
     const slug = resolveSlug(post.slug);
+    const revalidated = revalidateBlogContent(slug);
+
+    if (operation === "delete") {
+      return NextResponse.json({
+        ok: true,
+        operation,
+        revalidated,
+        skipped: "delete_revalidation_only",
+      });
+    }
+
     const title = post.title?.trim();
     const excerpt = post.excerpt?.trim();
-
-    const revalidated = revalidateBlogContent(slug);
 
     if (post.notificationSentAt) {
       return NextResponse.json({
         ok: true,
+        operation,
         revalidated,
         skipped: "already_notified",
       });
@@ -92,6 +130,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Post is missing title, slug, or excerpt.",
+          operation,
           revalidated,
         },
         { status: 400 },
@@ -103,28 +142,51 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Email service is not configured.",
+          operation,
           revalidated,
         },
         { status: 500 },
       );
     }
 
-    const subscriberRows = await fetchActiveNewsletterSubscribers();
+    const writeTokenConfigured = Boolean(process.env.SANITY_API_WRITE_TOKEN);
+    const readTokenConfigured = Boolean(process.env.SANITY_API_READ_TOKEN);
+    const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? null;
+    const sanityDataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
+    const writeClient = getSanityWriteClient();
+
+    console.info("[sanity-webhook] subscriber query runtime config", {
+      sanityProjectId,
+      sanityDataset,
+      apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION ?? "2024-01-01",
+      client: "getSanityWriteClient",
+      useCdn: false,
+      writeTokenConfigured,
+      readTokenConfigured,
+      writeClientAvailable: Boolean(writeClient),
+      query: activeSubscribersQuery.trim(),
+    });
+
+    const subscriberRows = writeClient
+      ? await writeClient.fetch<Array<{ email?: string }>>(activeSubscribersQuery)
+      : [];
     const subscriberEmails = subscriberRows
       .map((row) => row.email?.trim().toLowerCase())
       .filter((email): email is string => Boolean(email));
 
-    console.info("[sanity-webhook] active subscriber lookup", {
-      dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
-      query: activeSubscribersQuery.trim(),
+    console.info("[sanity-webhook] active subscriber lookup result", {
+      sanityProjectId,
+      sanityDataset,
       rawCount: subscriberRows.length,
-      rawResult: subscriberRows,
       emailCount: subscriberEmails.length,
+      rawResult: subscriberRows,
+      skippedBecauseWriteClientMissing: !writeClient,
     });
 
     if (subscriberEmails.length === 0) {
       return NextResponse.json({
         ok: true,
+        operation,
         revalidated,
         skipped: "no_subscribers",
       });
@@ -146,13 +208,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Failed to send subscriber notification.",
+          operation,
           revalidated,
         },
         { status: 500 },
       );
     }
 
-    const writeClient = getSanityWriteClient();
     if (writeClient) {
       await writeClient
         .patch(post._id!)
@@ -166,6 +228,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       ok: true,
+      operation,
       revalidated,
       notified: true,
       slug,

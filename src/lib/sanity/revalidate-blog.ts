@@ -7,7 +7,7 @@ export interface RevalidateBlogContentResult {
   tags: string[];
 }
 
-/** Invalidate cached blog data and prerendered routes after Sanity publishes or updates a post. */
+/** Invalidate cached blog data and prerendered routes after Sanity publishes, updates, or deletes a post. */
 export function revalidateBlogContent(slug?: string): RevalidateBlogContentResult {
   const paths = ["/", "/blog"];
   const tags = [SANITY_POSTS_TAG];

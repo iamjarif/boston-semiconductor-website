@@ -228,12 +228,14 @@ In [sanity.io/manage](https://www.sanity.io/manage) → your project → **API**
 | --- | --- |
 | **URL** | `https://www.bostonsemiconductor.com/api/webhooks/sanity` |
 | **Dataset** | `production` (or your dataset) |
-| **Trigger on** | Create, Update |
-| **Filter** | `_type == "post" && !(_id in path("drafts.**"))` |
-| **Projection** | `{ "_type": _type, "_id": _id, "title": title, "slug": slug.current, "excerpt": excerpt, "notificationSentAt": notificationSentAt }` |
+| **Trigger on** | Create, Update, **Delete** |
+| **Filter** | `(_type == "post" \|\| before()._type == "post") && !(_id in path("drafts.**"))` |
+| **Projection** | `{ "operation": select(before() == null => "create", after() == null => "delete", "update"), "_type": coalesce(after()._type, before()._type), "_id": _id, "title": coalesce(after().title, before().title), "slug": coalesce(after().slug.current, before().slug.current), "excerpt": coalesce(after().excerpt, before().excerpt), "notificationSentAt": coalesce(after().notificationSentAt, before().notificationSentAt) }` |
 | **Secret** | Generate a secret → set as `SANITY_WEBHOOK_SECRET` in `.env.local` |
 
 Subscribers can unsubscribe from any email. Active and unsubscribed records are visible in Sanity Studio under **Newsletter Subscriber**.
+
+**Delete events:** When a published post is deleted, the webhook revalidates `/`, `/blog`, and `/blog/[slug]` immediately. Newsletter emails are **not** sent for deletes — only for first-time publishes (Create).
 
 ## Scripts
 
