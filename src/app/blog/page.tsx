@@ -6,6 +6,7 @@ import {
   SectionRevealItem,
 } from "@/components/ui/SectionReveal";
 import { getBlogPosts } from "@/lib/blog";
+import { containerClassName } from "@/lib/layout/container";
 
 /** Render on each request so listing updates without CDN prerender stale windows. */
 export const dynamic = "force-dynamic";
@@ -19,7 +20,7 @@ export default async function BlogPage() {
   });
 
   return (
-    <section className="relative -mt-[var(--layout-nav-height)] overflow-hidden bg-bg-base px-4 pb-24 pt-[calc(var(--layout-nav-height)+2rem)] lg:pb-[140px] lg:pt-[calc(var(--layout-nav-height)+3rem)]">
+    <section className="relative -mt-[var(--layout-nav-height)] overflow-hidden bg-bg-base pb-24 pt-[calc(var(--layout-nav-height)+2rem)] lg:pb-[140px] lg:pt-[calc(var(--layout-nav-height)+3rem)]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
@@ -31,7 +32,7 @@ export default async function BlogPage() {
         />
       </div>
 
-      <SectionReveal className="relative z-10 mx-auto flex w-full max-w-[1316px] flex-col items-center gap-16">
+      <SectionReveal className={`relative z-10 flex flex-col items-center gap-16 ${containerClassName()}`}>
         <SectionRevealItem className="w-full">
           <BlogPageHeader
             eyebrow="Blogs"

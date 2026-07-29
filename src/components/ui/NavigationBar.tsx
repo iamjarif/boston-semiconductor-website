@@ -19,6 +19,7 @@ import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/Button";
 import { useLenis } from "@/components/ui/SmoothScrollProvider";
 import { siteConfig } from "@/lib/config/site";
+import { NAV_MAX_WIDTH, PAGE_PADDING_X } from "@/lib/layout/container";
 import { useScrollToSection } from "@/lib/navigation/use-scroll-to-section";
 import {
   isNavLinkActive,
@@ -421,13 +422,13 @@ export function NavigationBar({
         initial={{ y: reduceMotion ? 0 : "-100%" }}
         animate={{ y: isVisuallyHidden ? "-100%" : "0%" }}
         transition={{ duration: NAV_INTRO_DURATION, ease: REVEAL_EASE }}
-        className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center px-4 py-4 transition-[background-color,backdrop-filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0 ${
+        className={`fixed inset-x-0 top-0 z-50 flex items-center justify-center ${PAGE_PADDING_X} py-4 transition-[background-color,backdrop-filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:duration-0 ${
           isScrolled || isMenuOpen
             ? "bg-bg-base/80 backdrop-blur-md"
             : "bg-transparent"
         } ${className}`}
       >
-        <div className="flex w-full max-w-[1800px] items-center">
+        <div className={`flex w-full ${NAV_MAX_WIDTH} items-center`}>
           <div className="flex w-auto shrink-0 items-center lg:w-[200px]">
             <button
               type="button"

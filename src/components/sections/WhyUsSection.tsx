@@ -4,6 +4,7 @@ import { useRef } from "react";
 
 import { WhyUsParallaxCards } from "@/components/sections/WhyUsParallaxCards";
 import { GlowOrb } from "@/components/ui/GlowOrb";
+import { containerClassName } from "@/lib/layout/container";
 
 interface WhyUsCardData {
   caption: string;
@@ -59,7 +60,7 @@ export function WhyUsSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex flex-col items-center gap-16 overflow-hidden bg-bg-base px-4 py-24 lg:py-[140px]"
+      className="relative flex flex-col items-center gap-16 overflow-hidden bg-bg-base py-24 lg:py-[140px]"
     >
       <div
         aria-hidden
@@ -78,7 +79,7 @@ export function WhyUsSection() {
         />
       </div>
 
-      <div className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16">
+      <div className={`relative z-10 flex flex-col items-center gap-16 ${containerClassName()}`}>
         <WhyUsParallaxCards
           sectionRef={sectionRef}
           firstRow={firstRow}

@@ -17,6 +17,7 @@ import {
   SECTION_REVEAL_CHILD_STAGGER,
   SECTION_REVEAL_Y,
 } from "@/lib/motion/reveal-presets";
+import { containerClassName } from "@/lib/layout/container";
 
 interface ProcessBlockData {
   title: string;
@@ -322,7 +323,7 @@ export function ProcessBreakdownScroll() {
   }, [lenis, isDesktop]);
 
   return (
-    <section className="relative flex flex-col items-center overflow-clip bg-bg-base px-4 py-24 lg:py-[140px]">
+    <section className="relative flex flex-col items-center overflow-clip bg-bg-base py-24 lg:py-[140px]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
@@ -337,7 +338,7 @@ export function ProcessBreakdownScroll() {
 
       <div
         ref={stageRef}
-        className="relative z-10 flex w-full max-w-[1316px] flex-col gap-16 lg:h-screen lg:gap-0"
+        className={`relative z-10 flex flex-col gap-16 lg:h-screen lg:gap-0 ${containerClassName()}`}
       >
         <div
           ref={headerRef}

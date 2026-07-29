@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/SectionReveal";
 import { formatBlogDate } from "@/lib/blog-utils";
 import { getBlogPosts } from "@/lib/blog";
+import { containerClassName } from "@/lib/layout/container";
 
 const HOMEPAGE_POST_COUNT = 3;
 const PLACEHOLDER_IMAGE = "/images/blog/placeholder.png";
@@ -24,8 +25,8 @@ export async function BlogSection() {
   }
 
   return (
-    <section className="flex flex-col items-center gap-16 overflow-hidden bg-bg-base px-4 py-24 lg:py-[140px]">
-      <SectionReveal className="flex w-full max-w-[1316px] flex-col items-center gap-16">
+    <section className="flex flex-col items-center gap-16 overflow-hidden bg-bg-base py-24 lg:py-[140px]">
+      <SectionReveal className={`flex flex-col items-center gap-16 ${containerClassName()}`}>
         <SectionRevealItem className="flex w-full flex-col items-center gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex flex-1 flex-col items-center gap-3 text-center sm:items-start sm:text-left">
             <p className="text-mono-lg text-brand-primary">Blogs</p>

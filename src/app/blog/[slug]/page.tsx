@@ -9,11 +9,10 @@ import { RelatedPostsSection } from "@/components/blog/RelatedPostsSection";
 import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { getBlogPost, getRelatedPosts } from "@/lib/blog";
+import { ARTICLE_MAX_WIDTH, containerClassName } from "@/lib/layout/container";
 
 /** Render on each request so posts (including new slugs) update without CDN prerender stale windows. */
 export const dynamic = "force-dynamic";
-
-const ARTICLE_MAX_WIDTH = "max-w-[750px]";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -46,7 +45,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const relatedPosts = await getRelatedPosts(slug, post.category, 3);
 
   return (
-    <article className="relative -mt-[var(--layout-nav-height)] overflow-hidden bg-bg-base px-4 pb-16 pt-[calc(var(--layout-nav-height)+2rem)] lg:pb-[140px] lg:pt-[calc(var(--layout-nav-height)+3rem)]">
+    <article className="relative -mt-[var(--layout-nav-height)] overflow-hidden bg-bg-base pb-16 pt-[calc(var(--layout-nav-height)+2rem)] lg:pb-[140px] lg:pt-[calc(var(--layout-nav-height)+3rem)]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
@@ -58,7 +57,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         />
       </div>
 
-      <div className={`relative z-10 mx-auto flex w-full ${ARTICLE_MAX_WIDTH} flex-col gap-8`}>
+      <div className={`relative z-10 flex flex-col gap-8 ${containerClassName(ARTICLE_MAX_WIDTH)}`}>
         <Button
           href="/blog"
           variant="ghost"
@@ -94,7 +93,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </div>
 
       {relatedPosts.length > 0 ? (
-        <div className="relative z-10 mx-auto mt-12 w-full max-w-[1316px] lg:mt-20">
+        <div className={`relative z-10 mt-12 lg:mt-20 ${containerClassName()}`}>
           <RelatedPostsSection posts={relatedPosts} />
         </div>
       ) : null}

@@ -13,6 +13,7 @@ import {
   SectionRevealGroup,
   SectionRevealItem,
 } from "@/components/ui/SectionReveal";
+import { containerClassName } from "@/lib/layout/container";
 
 interface SecurityCardData {
   icon: ReactNode;
@@ -63,7 +64,7 @@ export function SecuritySection() {
   return (
     <section
       id="ip-security"
-      className="relative flex items-center justify-center overflow-hidden bg-bg-base px-4 py-24 lg:py-[140px]"
+      className="relative flex items-center justify-center overflow-hidden bg-bg-base py-24 lg:py-[140px]"
     >
       <div
         aria-hidden
@@ -82,7 +83,7 @@ export function SecuritySection() {
         />
       </div>
 
-      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-8 lg:flex-row">
+      <SectionReveal className={`relative z-10 flex flex-col items-center gap-8 lg:flex-row ${containerClassName()}`}>
         <SectionRevealItem className="flex flex-1 flex-col items-center gap-7 text-center lg:items-start lg:text-left">
           <div className="flex flex-col items-center gap-3 lg:items-start">
             <p className="text-mono-lg text-brand-primary">IP SECURITY</p>

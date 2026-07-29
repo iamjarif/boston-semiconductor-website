@@ -9,6 +9,7 @@ import { GlowOrb } from "@/components/ui/GlowOrb";
 import { serviceOfferings } from "@/lib/content/services";
 import { siteConfig } from "@/lib/config/site";
 import { useScrollToSection } from "@/lib/navigation/use-scroll-to-section";
+import { containerClassName } from "@/lib/layout/container";
 
 function LinkedInIcon() {
   return (
@@ -43,7 +44,7 @@ export function Footer() {
   const linkedInUrl = siteConfig.social?.linkedin;
 
   return (
-    <footer className="relative overflow-hidden border-t border-border-default bg-bg-surface px-4 py-16 lg:py-24">
+    <footer className="relative overflow-hidden border-t border-border-default bg-bg-surface py-16 lg:py-24">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[1] overflow-visible"
@@ -61,7 +62,7 @@ export function Footer() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1316px] flex-col gap-12 lg:gap-16">
+      <div className={`relative z-10 flex flex-col gap-12 lg:gap-16 ${containerClassName()}`}>
         {/* Top: brand + newsletter */}
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
           <div className="flex max-w-md flex-col gap-5">

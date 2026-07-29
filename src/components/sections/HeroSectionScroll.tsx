@@ -12,6 +12,7 @@ import { useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { SectionReveal, SectionRevealItem } from "@/components/ui/SectionReveal";
+import { containerClassName } from "@/lib/layout/container";
 
 export function HeroSectionScroll() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -72,7 +73,7 @@ export function HeroSectionScroll() {
         through the transparent fixed nav — only the content needs to sit
         below it.
       */}
-      <div className="relative z-10 flex min-h-viewport-below-nav flex-1 flex-col items-center px-4 text-center">
+      <div className="relative z-10 flex min-h-viewport-below-nav flex-1 flex-col items-center text-center">
         {/*
           Ratio-based spacers (not fixed pixels) bias the centered content
           slightly upward — a geometrically-centered block here reads as
@@ -81,7 +82,7 @@ export function HeroSectionScroll() {
         */}
         <div className="flex-[0.92]" aria-hidden="true" />
 
-        <SectionReveal className="flex w-full max-w-[1316px] flex-col items-center gap-8">
+        <SectionReveal className={`flex flex-col items-center gap-8 ${containerClassName()}`}>
           <SectionRevealItem className="flex flex-col items-center gap-3">
             <p className="text-mono-lg text-brand-primary">
               Precision VLSI Engineering

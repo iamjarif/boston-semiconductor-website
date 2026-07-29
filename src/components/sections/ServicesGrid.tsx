@@ -7,6 +7,7 @@ import {
   SectionRevealItem,
 } from "@/components/ui/SectionReveal";
 import { serviceOfferings } from "@/lib/content/services";
+import { containerClassName } from "@/lib/layout/container";
 
 interface ServiceCardData {
   caption: string;
@@ -20,7 +21,7 @@ export function ServicesGrid() {
   return (
     <section
       id="services"
-      className="relative flex flex-col items-center gap-24 overflow-hidden bg-bg-surface px-4 py-24 lg:py-[140px]"
+      className="relative flex flex-col items-center gap-24 overflow-hidden bg-bg-surface py-24 lg:py-[140px]"
     >
       <div
         aria-hidden
@@ -34,7 +35,7 @@ export function ServicesGrid() {
         />
       </div>
 
-      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-24">
+      <SectionReveal className={`relative z-10 flex flex-col items-center gap-24 ${containerClassName()}`}>
         <SectionRevealItem
           blurFromLg
           className="flex flex-col items-center gap-7 text-center"

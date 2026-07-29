@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { GlowOrb } from "@/components/ui/GlowOrb";
 import { InputField, type InputFieldMessage } from "@/components/ui/InputField";
 import { SectionReveal, SectionRevealItem } from "@/components/ui/SectionReveal";
+import { containerClassName } from "@/lib/layout/container";
 
 interface ContactFormState {
   name: string;
@@ -120,7 +121,7 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative flex flex-col items-center overflow-hidden bg-bg-surface px-4 py-16 sm:py-24"
+      className="relative flex flex-col items-center overflow-hidden bg-bg-surface py-16 sm:py-24"
     >
       <div
         aria-hidden
@@ -139,7 +140,7 @@ export function ContactSection() {
         />
       </div>
 
-      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
+      <SectionReveal className={`relative z-10 flex flex-col items-center gap-16 lg:flex-row lg:items-start lg:justify-between lg:gap-8 ${containerClassName()}`}>
         <SectionRevealItem className="flex flex-col items-center gap-7 text-center lg:max-w-[558px] lg:items-start lg:text-left">
           <div className="flex flex-col items-center gap-3 lg:items-start">
             <p className="text-mono-lg text-border-button">

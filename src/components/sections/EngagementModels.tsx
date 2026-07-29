@@ -5,6 +5,7 @@ import {
   SectionRevealGroup,
   SectionRevealItem,
 } from "@/components/ui/SectionReveal";
+import { containerClassName } from "@/lib/layout/container";
 
 interface EngagementModelData {
   caption: string;
@@ -42,7 +43,7 @@ export function EngagementModels() {
   return (
     <section
       id="engagement-models"
-      className="relative flex flex-col items-center gap-16 overflow-hidden bg-bg-surface px-4 py-24 lg:py-[140px]"
+      className="relative flex flex-col items-center gap-16 overflow-hidden bg-bg-surface py-24 lg:py-[140px]"
     >
       <div
         aria-hidden
@@ -56,7 +57,7 @@ export function EngagementModels() {
         />
       </div>
 
-      <SectionReveal className="relative z-10 flex w-full max-w-[1316px] flex-col items-center gap-16">
+      <SectionReveal className={`relative z-10 flex flex-col items-center gap-16 ${containerClassName()}`}>
         <SectionRevealItem className="flex flex-col items-center gap-7 text-center">
           <div className="flex flex-col items-center gap-3">
             <p className="text-mono-lg text-brand-primary">

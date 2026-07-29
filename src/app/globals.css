@@ -97,6 +97,23 @@
   min-height: calc(100svh - var(--layout-nav-height));
 }
 
+/*
+ * Site-wide horizontal page gutter. Matches PAGE_PADDING_X in
+ * src/lib/layout/container.ts — keep both in sync.
+ * Mobile (<768px): 16px · Tablet (768–1023px): 24px · Desktop (1024px+): 32px
+ */
+@utility page-padding-x {
+  padding-inline: 1rem;
+
+  @media (width >= 768px) {
+    padding-inline: 1.5rem;
+  }
+
+  @media (width >= 1024px) {
+    padding-inline: 2rem;
+  }
+}
+
 html {
   scroll-padding-top: var(--layout-nav-height);
 }

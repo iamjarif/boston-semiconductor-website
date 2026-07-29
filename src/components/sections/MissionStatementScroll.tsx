@@ -6,6 +6,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { ParallaxGlowOrb } from "@/components/ui/ParallaxGlowOrb";
 import { useLenis } from "@/components/ui/SmoothScrollProvider";
+import { containerClassName } from "@/lib/layout/container";
 
 const MISSION_TEXT =
   "We are a specialized semiconductor design partner, delivering silicon-proven VLSI solutions across advanced process nodes for clients in power electronics, telecommunications, automotive, and IoT.";
@@ -117,7 +118,7 @@ export function MissionStatementScroll() {
       ref={sectionRef}
       id="about"
       aria-label="Mission"
-      className="relative flex min-h-svh items-center justify-center overflow-hidden bg-bg-base px-4"
+      className="relative flex min-h-svh items-center justify-center overflow-hidden bg-bg-base"
     >
       <div
         aria-hidden
@@ -145,7 +146,7 @@ export function MissionStatementScroll() {
         />
       </div>
 
-      <p className="relative z-10 max-w-[1316px] text-center text-h2 max-sm:text-[2.25rem]">
+      <p className={`relative z-10 text-center text-h2 max-sm:text-[2.25rem] ${containerClassName()}`}>
         {splitText}
       </p>
     </section>
