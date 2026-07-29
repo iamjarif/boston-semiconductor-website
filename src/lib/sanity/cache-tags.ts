@@ -13,9 +13,11 @@ export function getSanityFetchOptions(slug?: string) {
     ? [SANITY_POSTS_TAG, sanityPostTag(slug)]
     : [SANITY_POSTS_TAG];
 
+  // Tag-based invalidation (webhook) and time-based ISR are mutually exclusive on
+  // fetch caches — page-level `export const revalidate` remains the ISR fallback.
   return {
     next: {
-      revalidate: SANITY_FETCH_REVALIDATE_SECONDS,
+      revalidate: false,
       tags,
     },
   } as const;

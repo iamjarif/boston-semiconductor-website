@@ -105,6 +105,27 @@ export async function POST(request: NextRequest) {
     const slug = resolveSlug(post.slug);
     const revalidated = revalidateBlogContent(slug);
 
+    console.info("[sanity-webhook] cache revalidation", {
+      operation,
+      postId: post._id,
+      slug,
+      fetchTagsUsedByPages: slug
+        ? ["sanity:posts", `sanity:post:${slug}`]
+        : ["sanity:posts"],
+      revalidated,
+      pathSummary: revalidated.paths.map((entry) => ({
+        path: entry.target,
+        type: entry.type ?? "default",
+        ok: entry.ok,
+        error: entry.error ?? null,
+      })),
+      tagSummary: revalidated.tags.map((entry) => ({
+        tag: entry.target,
+        ok: entry.ok,
+        error: entry.error ?? null,
+      })),
+    });
+
     if (operation === "delete") {
       return NextResponse.json({
         ok: true,

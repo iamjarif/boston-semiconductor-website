@@ -20,7 +20,8 @@ export function getSanityClient(): SanityClient | null {
       projectId,
       dataset,
       apiVersion,
-      useCdn: true,
+      // Bypass Sanity CDN so webhook revalidation refetches fresh Content Lake data.
+      useCdn: false,
       token: process.env.SANITY_API_READ_TOKEN,
     });
   }
