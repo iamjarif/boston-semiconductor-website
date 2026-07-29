@@ -4,7 +4,10 @@ import { Resend } from "resend";
 
 import { sendSubscriberBroadcast } from "@/lib/email/send-subscriber-batch";
 import { getSiteUrl } from "@/lib/email/resend-config";
-import { listActiveNewsletterSubscriberEmails } from "@/lib/newsletter/subscribers";
+import {
+  activeSubscribersQuery,
+  fetchActiveNewsletterSubscribers,
+} from "@/lib/newsletter/subscribers";
 import { revalidateBlogContent } from "@/lib/sanity/revalidate-blog";
 import { methodNotAllowedResponse } from "@/lib/security/request";
 import { getSanityWriteClient } from "@/lib/sanity/write-client";
@@ -106,7 +109,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const subscriberEmails = await listActiveNewsletterSubscriberEmails();
+    const subscriberRows = await fetchActiveNewsletterSubscribers();
+    const subscriberEmails = subscriberRows
+      .map((row) => row.email?.trim().toLowerCase())
+      .filter((email): email is string => Boolean(email));
+
+    console.info("[sanity-webhook] active subscriber lookup", {
+      dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
+      query: activeSubscribersQuery.trim(),
+      rawCount: subscriberRows.length,
+      rawResult: subscriberRows,
+      emailCount: subscriberEmails.length,
+    });
+
     if (subscriberEmails.length === 0) {
       return NextResponse.json({
         ok: true,

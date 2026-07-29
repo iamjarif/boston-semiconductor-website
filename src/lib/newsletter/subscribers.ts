@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 
-import { getSanityClient } from "@/lib/sanity/client";
 import { getSanityWriteClient } from "@/lib/sanity/write-client";
 
-const activeSubscribersQuery = `
+/** GROQ used by the Sanity webhook to decide whether to send blog notifications. */
+export const activeSubscribersQuery = `
   *[_type == "newsletterSubscriber" && !defined(unsubscribedAt)] {
     email
   }
@@ -41,11 +41,18 @@ export async function subscribeNewsletterSubscriber(
   }
 }
 
-export async function listActiveNewsletterSubscriberEmails(): Promise<string[]> {
-  const client = getSanityClient();
+export async function fetchActiveNewsletterSubscribers(): Promise<
+  Array<{ email?: string }>
+> {
+  // Subscriber documents are not publicly readable; use the authenticated write client.
+  const client = getSanityWriteClient();
   if (!client) return [];
 
-  const rows = await client.fetch<Array<{ email?: string }>>(activeSubscribersQuery);
+  return client.fetch<Array<{ email?: string }>>(activeSubscribersQuery);
+}
+
+export async function listActiveNewsletterSubscriberEmails(): Promise<string[]> {
+  const rows = await fetchActiveNewsletterSubscribers();
   return rows
     .map((row) => row.email?.trim().toLowerCase())
     .filter((email): email is string => Boolean(email));
