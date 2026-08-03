@@ -51,7 +51,7 @@ const securityCards: SecurityCardData[] = [
   },
   {
     icon: <Lock className="size-8 sm:size-[42px]" weight="bold" />,
-    title: "Device & Data",
+    title: "Secure Communication",
     bullets: [
       "Encrypted VPN to client servers",
       "24/7 ODC surveillance",
